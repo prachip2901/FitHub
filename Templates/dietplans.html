@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Diet Plans{% endblock title %}
+
+{% block body %}
+
+<style>
+
+  
+
+  h2{font-weight:700}
+
+  /* Hero Section */
+
+  /* Hero */
+  .hero{
+  height:350px;
+  background:url('https://www.grampiansweightspecialists.com.au/wp-content/uploads/2025/04/The-Best-Weight-Loss-Programs-Of-2025-How-To-Choose-The-Right-One-For-You.png') center/cover no-repeat;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  color:white;
+
+  }
+  .hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(13,27,42,0.7), rgba(27,58,87,0.35));
+  }
+  .hero h2{
+  z-index:1;
+  font-size:2.5rem;
+  text-shadow:2px 2px 10px black;
+  }
+
+    .hero-content{
+  position:relative;
+  text-align:center;
+  color:#fff;
+}
+
+.hero-content p{
+  font-size:1.1rem;
+  opacity:.9;
+}
+
+
+</style>
+<!-- Hero Section -->
+
+
+    <section class="hero">
+  <div class="hero-content">
+    <h2 id="greeting">Diet Plans</h2>
+    <p>Balanced diet plans designed to support healthy and sustainable weight loss.
+
+</p>
+  </div>
+</section>
+
+
+<!-- User Input Form -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4 fw-bold text-dark">Enter Your Details</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form id="dietForm" class="row g-3 shadow p-4 bg-white rounded-4">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Weight (kg)</label>
+            <input type="number" class="form-control" id="weight" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Height (cm)</label>
+            <input type="number" class="form-control" id="height" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Age</label>
+            <input type="number" class="form-control" id="age" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Goal</label>
+            <select class="form-select" id="goal" required>
+              <option value="">Select</option>
+              <option value="weight_loss">Weight Loss</option>
+              <option value="muscle_gain">Muscle Gain</option>
+              <option value="maintain">Maintain</option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label fw-bold">Diet Preference</label>
+            <select class="form-select" id="preference">
+              <option value="any">Any</option>
+              <option value="vegan">Vegan</option>
+              <option value="keto">Keto</option>
+              <option value="low_carb">Low Carb</option>
+            </select>
+          </div>
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary btn-lg px-5 mt-3 rounded-pill fw-bold">Generate Plan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Diet Plan Cards -->
+<section class="py-5 bg-white" id="dietPlans">
+  <div class="container">
+    <h2 class="text-center mb-4 fw-bold text-dark">Your Personalized Diet Plan</h2>
+    <div class="row g-4" id="plansContainer">
+      <!-- AI-generated cards -->
+    </div>
+    <div class="text-center mt-4" id="summary"></div>
+    <canvas id="macroChart" class="mt-3"></canvas>
+  </div>
+</section>
+
+
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const mealImages = {
+  "Oatmeal": "{% static 'img/oatmeal1.jpg' %}",
+  "Salad": "{% static 'img/salad.jpg' %}",
+  "Quinoa": "{% static 'img/quinoa.jpg' %}",
+  "Smoothie": "{% static 'img/smoothie1.jpg' %}",
+  "Omelette": "{% static 'img/omelette.jpg' %}",
+  "Chicken": "{% static 'img/chicken.jpg' %}",
+  "Shake": "{% static 'img/shake1.jpg' %}",
+  "Salmon": "{% static 'img/salmon.jpg' %}",
+  "Yogurt": "{% static 'img/yogurt.jpg' %}",
+  "Veggies": "{% static 'img/veggies.jpg' %}",
+  "Fish": "{% static 'img/fish.jpg' %}",
+  "Fruits": "{% static 'img/fruits.jpg' %}"
+};
+const defaultImg = "{% static 'img/default.jpg' %}";
+
+const mockAI = (goal) => {
+  const meals = {
+    weight_loss: [
+      {name:"Oatmeal with berries", calories:250, protein:8, carbs:40, fat:5},
+      {name:"Grilled Chicken Salad", calories:350, protein:30, carbs:20, fat:10},
+      {name:"Steamed Veggies & Quinoa", calories:300, protein:12, carbs:50, fat:8},
+      {name:"Protein Smoothie", calories:200, protein:20, carbs:15, fat:4}
+    ],
+    muscle_gain: [
+      {name:"Egg White Omelette", calories:300, protein:25, carbs:20, fat:10},
+      {name:"Grilled Chicken & Brown Rice", calories:450, protein:35, carbs:50, fat:12},
+      {name:"Protein Shake with Banana", calories:250, protein:25, carbs:30, fat:5},
+      {name:"Salmon with Sweet Potato", calories:400, protein:40, carbs:30, fat:15}
+    ],
+    maintain: [
+      {name:"Greek Yogurt with Honey", calories:200, protein:15, carbs:30, fat:5},
+      {name:"Mixed Veggie Salad", calories:250, protein:10, carbs:35, fat:8},
+      {name:"Grilled Fish & Quinoa", calories:350, protein:30, carbs:40, fat:10},
+      {name:"Fruits & Nuts Mix", calories:180, protein:5, carbs:25, fat:7}
+    ]
+  };
+  return meals[goal] || [];
+};
+
+document.getElementById('dietForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const goal = document.getElementById('goal').value;
+  const dietPlan = mockAI(goal);
+  const container = document.getElementById('plansContainer');
+  const summary = document.getElementById('summary');
+
+  container.innerHTML = "";
+  let totalCal=0, totalProtein=0, totalCarbs=0, totalFat=0;
+
+  dietPlan.forEach(meal=>{
+    let imgSrc = defaultImg;
+    for (let key in mealImages){ if(meal.name.includes(key)) { imgSrc=mealImages[key]; break; } }
+
+    totalCal+=meal.calories; totalProtein+=meal.protein; totalCarbs+=meal.carbs; totalFat+=meal.fat;
+
+    container.innerHTML += `
+      <div class="col-md-3">
+        <div class="card shadow-sm h-100 rounded-4 border-0 hover-card d-flex flex-column">
+          <img src="${imgSrc}" class="card-img-top" alt="${meal.name}">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold">${meal.name}</h5>
+            <p class="card-text small">Calories: ${meal.calories} kcal<br>
+              Protein: ${meal.protein}g | Carbs: ${meal.carbs}g | Fat: ${meal.fat}g</p>
+            <button class="btn btn-orange w-100 mt-auto rounded-pill fw-bold" onclick="swapMeal('${meal.name}')">🔄 Swap Meal</button>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  summary.innerHTML = `<h5 class="fw-bold text-dark mt-3">Daily Total: ${totalCal} kcal | Protein: ${totalProtein}g | Carbs: ${totalCarbs}g | Fat: ${totalFat}g</h5>`;
+  updateMacroChart(totalProtein, totalCarbs, totalFat);
+
+  document.getElementById('tipsList').innerHTML = `
+    <li>🥗 Drink 2-3 liters of water daily.</li>
+    <li>💪 Target 1.6g protein per kg body weight.</li>
+    <li>🍳 Balance macros for energy & recovery.</li>
+    <li>🌙 Sleep 7-8 hrs daily for metabolism boost.</li>
+  `;
+});
+
+function swapMeal(mealName){
+  alert("🤖 AI Suggestion: Try a different healthy option for " + mealName);
+}
+
+let macroChart;
+function updateMacroChart(protein, carbs, fat){
+  const ctx = document.getElementById('macroChart').getContext('2d');
+  if(macroChart) macroChart.destroy();
+
+  macroChart = new Chart(ctx,{
+    type:'pie',
+    data:{
+      labels:["Protein","Carbs","Fat"],
+      datasets:[{
+        data:[protein,carbs,fat],
+        backgroundColor:["#1a73e8","#34a853","#fbbc05"]
+      }]
+    },
+    options:{
+      plugins:{ legend:{ labels:{ font:{size:12,weight:'bold'} } } }
+    }
+  });
+}
+</script>
+
+<style>
+.hover-card { transition: transform 0.3s, box-shadow 0.3s; }
+.hover-card:hover { transform: translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.2); }
+
+#plansContainer .card-img-top {
+    height: 200px; width: 100%; object-fit: cover;
+    border-top-left-radius: 12px; border-top-right-radius: 12px;
+}
+
+#macroChart { max-width: 300px; max-height: 200px; margin: 0 auto; }
+
+.btn-orange { background-color: #ff7f00; color: #fff; border: none; }
+.btn-orange:hover { background-color: #e67300; }
+</style>
+{% endblock body %}

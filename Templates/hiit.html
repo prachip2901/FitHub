@@ -1,0 +1,462 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+<!-- GOOGLE FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#06b6d4;
+  --primary-soft:#e0f7fb;
+  --green:#22c55e;
+  --yellow:#facc15;
+  --red:#ef4444;
+  --orange:#ff6b35;
+
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+
+  --radius-lg:22px;
+  --radius-md:14px;
+  --radius-sm:10px;
+
+  --shadow:0 12px 30px rgba(15,23,42,.08);
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-top:70px;
+}
+
+/* HERO */
+.hero{
+  width:100%;
+  height:340px;
+  background:url('https://www.cozmoderm.com/wp-content/uploads/2023/02/fat-loss.jpg') center/cover no-repeat;
+  position:relative;
+  display:grid;
+  place-items:center;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(2,6,23,.75),rgba(2,6,23,.35));
+}
+.hero h2{
+  position:relative;
+  font-size:2.6rem;
+  font-weight:800;
+  color:#fff;
+}
+
+/* CARD */
+.card{
+  max-width:520px;
+  width:94%;
+  background:var(--card);
+  border-radius:var(--radius-lg);
+  padding:22px;
+  margin:22px auto;
+  box-shadow:var(--shadow);
+}
+
+/* TEXT */
+#exerciseName{
+  font-size:1.6rem;
+  font-weight:800;
+  text-align:center;
+}
+#phase{
+  font-size:11px;
+  text-align:center;
+  color:var(--muted);
+  letter-spacing:1.2px;
+}
+
+/* TIMER */
+#timer{
+  font-size:3.8rem;
+  font-weight:800;
+  text-align:center;
+  color:var(--primary);
+  margin:14px 0;
+}
+.running #timer{
+  animation:pulse 1s infinite;
+}
+@keyframes pulse{
+  50%{transform:scale(1.04)}
+}
+
+/* LEVEL */
+.level-buttons{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+}
+.btn1{
+  padding:7px 16px;
+  border-radius:999px;
+  border:none;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+.green{background:var(--green);color:#fff}
+.yellow{background:var(--yellow);color:#000}
+.red{background:var(--red);color:#fff}
+
+/* PROGRESS */
+.progress-bg{
+  height:10px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+  margin:16px 0;
+}
+#progressBar{
+  height:100%;
+  background:linear-gradient(90deg,var(--primary),#22d3ee);
+  transition:width .4s ease;
+}
+
+/* CONTROLS */
+.controls{
+  display:flex;
+  gap:10px;
+}
+.control-btn{
+  flex:1;
+  padding:13px;
+  border:none;
+  border-radius:var(--radius-md);
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* STATS */
+.stats{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  color:var(--muted);
+  margin-top:10px;
+}
+
+/* TIP */
+#tip{
+  margin-top:14px;
+  background:var(--primary-soft);
+  padding:12px;
+  border-radius:var(--radius-sm);
+  font-size:13px;
+}
+
+/* BUILDER */
+.builder-inputs input{
+  padding:11px;
+  border-radius:var(--radius-sm);
+  border:1px solid #d1d5db;
+}
+.add-btn{
+  width:100%;
+  margin-top:8px;
+  padding:13px;
+  background:var(--orange);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius-md);
+  font-weight:700;
+  cursor:pointer;
+}
+#builderList li{
+  padding:6px 10px;
+  border-radius:8px;
+}
+#builderList li.current{
+  background:var(--primary-soft);
+  font-weight:700;
+}
+
+canvas{max-height:180px}
+
+
+  /* Hero Section */
+
+  .hero-content{
+  position:relative;
+  text-align:center;
+  color:#fff;
+}
+
+.hero-content p{
+  font-size:1.1rem;
+  opacity:.9;
+}
+
+  /* Hero */
+  .hero{
+  height:350px;
+  background:url('https://www.cozmoderm.com/wp-content/uploads/2023/02/fat-loss.jpg') center/cover no-repeat;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  color:white;
+  }
+  .hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(13,27,42,0.7), rgba(27,58,87,0.35));
+  }
+  .hero h2{
+  z-index:1;
+  font-size:2.5rem;
+  text-shadow:2px 2px 10px black;
+  }
+
+h2{font-weight:700}
+
+.section-title{
+text-align:center;
+font-size:2rem;
+margin:40px 0;
+color:var(--primary);
+}
+</style>
+
+
+<!-- HERO -->
+
+  
+  <section class="hero">
+  <div class="hero-content">
+    <h2 id="greeting">HIIT Trainer</h2>
+<p>High-Intensity workouts designed to burn fat and boost stamina</p>
+  </div>
+</section>
+
+<!-- MAIN CARD -->
+<div class="card">
+  <h2 id="exerciseName">Jumping Jacks</h2>
+  <p id="phase">WORK</p>
+  <div id="timer">30</div>
+
+  <div class="level-buttons">
+    <button class="btn1 green" onclick="setLevel('beginner')">Beginner</button>
+    <button class="btn1 yellow" onclick="setLevel('intermediate')">Intermediate</button>
+    <button class="btn1 red" onclick="setLevel('advanced')">Advanced</button>
+  </div>
+
+  <p style="text-align:center;font-size:12px;color:var(--muted)">
+    Level: <b id="level">Intermediate</b>
+  </p>
+
+  <div class="progress-bg">
+    <div id="progressBar"></div>
+  </div>
+
+  <div class="controls">
+    <button class="control-btn green" onclick="startWorkout()">▶ Start</button>
+    <button class="control-btn yellow" onclick="pauseWorkout()">⏸ Pause</button>
+    <button class="control-btn red" onclick="resetWorkout()">⟲ Reset</button>
+  </div>
+
+  <div class="stats">
+    <span>Exercise <b id="exerciseCount">1</b>/<b id="totalExercises">5</b></span>
+    <span>🔥 <b id="calories">0</b> kcal</span>
+  </div>
+
+  <div id="tip">💪 Stay consistent – results will follow.</div>
+</div>
+
+<!-- BUILDER -->
+<div class="card">
+  <h3>Custom Workout</h3>
+  <div class="builder-inputs">
+    <input id="exName" placeholder="Exercise name">
+    <input id="exWork" type="number" placeholder="Work (sec)">
+    <input id="exRest" type="number" placeholder="Rest (sec)">
+  </div>
+  <button class="add-btn" onclick="addExercise()">➕ Add Exercise</button>
+  <ul id="builderList"></ul>
+</div>
+
+<!-- HISTORY -->
+<div class="card">
+  <h3>Workout History</h3>
+  <ul id="history"></ul>
+  <canvas id="caloriesChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+
+const tips=[
+ "Breathe steadily 🫁",
+ "Form matters more than speed 💯",
+ "Engage your core 🔥",
+ "Hydrate well 💧",
+ "Consistency wins 🧠"
+];
+
+let workout=JSON.parse(localStorage.getItem("customWorkout"))||[
+ {name:"Jumping Jacks",work:30,rest:15},
+ {name:"Push Ups",work:30,rest:15},
+ {name:"Squats",work:30,rest:15},
+ {name:"High Knees",work:30,rest:15},
+ {name:"Mountain Climbers",work:30,rest:15}
+];
+
+const levelConfig={
+ beginner:{work:20,rest:15,cal:6},
+ intermediate:{work:30,rest:15,cal:10},
+ advanced:{work:45,rest:10,cal:15}
+};
+
+let index=0,phase="work",time=workout[0].work;
+let calories=0,interval,running=false,level="intermediate",chart;
+
+function speak(text){
+ if(!("speechSynthesis" in window))return;
+ speechSynthesis.cancel();
+ let msg=new SpeechSynthesisUtterance(text);
+ msg.rate=1.05;
+ speechSynthesis.speak(msg);
+}
+
+function updateUI(){
+ $("exerciseName").innerText=workout[index].name;
+ $("timer").innerText=time;
+ $("phase").innerText=phase.toUpperCase();
+ $("exerciseCount").innerText=index+1;
+ $("totalExercises").innerText=workout.length;
+ $("calories").innerText=Math.round(calories);
+ $("tip").innerText=tips[Math.floor(Math.random()*tips.length)];
+ renderBuilder();
+
+ let total=workout.reduce((a,w)=>a+w.work+w.rest,0);
+ let done=workout.slice(0,index).reduce((a,w)=>a+w.work+w.rest,0)
+   +(phase==="work"?workout[index].work-time:workout[index].work+workout[index].rest-time);
+ $("progressBar").style.width=(done/total*100)+"%";
+}
+
+function startWorkout(){
+ if(running)return;
+ running=true;
+ document.body.classList.add("running");
+ interval=setInterval(()=>{
+  if(time>0)time--;
+  else{
+   if(phase==="work"){
+    calories+=levelConfig[level].cal;
+    phase="rest";
+    time=workout[index].rest;
+    speak("Rest");
+   }else{
+    index++;
+    if(index>=workout.length){
+     clearInterval(interval);
+     running=false;
+     document.body.classList.remove("running");
+     saveHistory();
+     $("tip").innerText="🎉 Workout completed! Great job.";
+     speak("Workout completed");
+     return;
+    }
+    phase="work";
+    time=workout[index].work;
+    speak(workout[index].name);
+   }
+  }
+  updateUI();
+ },1000);
+}
+
+function pauseWorkout(){
+ clearInterval(interval);
+ running=false;
+ document.body.classList.remove("running");
+}
+
+function resetWorkout(){
+ clearInterval(interval);
+ running=false;
+ document.body.classList.remove("running");
+ index=0;phase="work";time=workout[0].work;calories=0;
+ updateUI();
+}
+
+function setLevel(l){
+ level=l;
+ workout.forEach(w=>{w.work=levelConfig[l].work;w.rest=levelConfig[l].rest});
+ $("level").innerText=l.charAt(0).toUpperCase()+l.slice(1);
+ resetWorkout();
+}
+
+function addExercise(){
+ let n=$("exName").value,w=+$("exWork").value,r=+$("exRest").value||10;
+ if(!n||w<=0)return;
+ workout.push({name:n,work:w,rest:r});
+ localStorage.setItem("customWorkout",JSON.stringify(workout));
+ $("exName").value=$("exWork").value=$("exRest").value="";
+ updateUI();
+}
+
+function removeExercise(i){
+ workout.splice(i,1);
+ localStorage.setItem("customWorkout",JSON.stringify(workout));
+ updateUI();
+}
+
+function renderBuilder(){
+ $("builderList").innerHTML="";
+ workout.forEach((w,i)=>{
+  let li=document.createElement("li");
+  li.className=(i===index&&running)?"current":"";
+  li.innerHTML=`${w.name} (${w.work}/${w.rest})`;
+  let b=document.createElement("button");
+  b.innerText="✕";
+  b.onclick=()=>removeExercise(i);
+  b.style.cssText="float:right;background:#ef4444;color:#fff;border:none;border-radius:6px;";
+  li.appendChild(b);
+  $("builderList").appendChild(li);
+ });
+}
+
+function saveHistory(){
+ let h=JSON.parse(localStorage.getItem("hiitHistory"))||[];
+ h.unshift({date:new Date().toLocaleDateString(),cal:calories});
+ localStorage.setItem("hiitHistory",JSON.stringify(h));
+ loadHistory();
+}
+
+function loadHistory(){
+ let h=JSON.parse(localStorage.getItem("hiitHistory"))||[];
+ $("history").innerHTML=h.slice(0,5).map(i=>`<li>🔥 ${Math.round(i.cal)} kcal • ${i.date}</li>`).join("");
+ renderChart(h.slice(0,5));
+}
+
+function renderChart(data){
+ if(chart)chart.destroy();
+ chart=new Chart($("caloriesChart"),{
+  type:"line",
+  data:{labels:data.map(d=>d.date),datasets:[{data:data.map(d=>d.cal),borderColor:"#06b6d4",tension:.4}]},
+  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+ });
+}
+
+loadHistory();
+updateUI();
+</script>
+
+{% endblock body %}

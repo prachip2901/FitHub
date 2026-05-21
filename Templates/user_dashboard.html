@@ -1,0 +1,1694 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FitLife | Fitness Website</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --accent-orange-dark: #e85a2a;
+      --accent-orange-hover: #ff7f50;
+      --bg-neutral: #f5f7fa;
+      --card-radius: 16px;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.08);
+      --primary-color: #4DA8DA;
+  --accent-color: #ff6b35;
+  --bg-dark: #0d1b2a;
+  --bg-light: #f8f9fa;
+  --text-light: #f0f6ff;
+  --text-dark: #212529;
+  --card-bg: #ffffff;
+
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --accent-orange-dark: #e85a2a;
+      --accent-orange-hover: #ff7f50;
+      --bg-neutral: #f5f7fa;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.08);
+    }
+
+    /* Base Reset */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+  font-family:'Inter', sans-serif;
+      background: var(--bg-neutral);
+      color: var(--dark-navy);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+      padding-top: 70px; /* Navbar space */
+    }
+
+    /* -------------------- Navbar -------------------- */
+    .navbar-modern {
+      background: rgba(13, 27, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: .8rem 0;
+      transition: all .3s ease;
+    }
+    .navbar-modern .navbar-brand .logo-text {
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, var(--light-blue), #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .navbar-modern .nav-link {
+      position: relative;
+      color: #f0f6ff !important;
+      font-weight: 500;
+      margin: 0 .6rem;
+      transition: color .3s ease;
+    }
+    
+    .navbar-modern .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0%; height: 2px;
+      background: var(--light-blue);
+      transition: width .3s ease;
+    }
+    .navbar-modern .nav-link:hover::after {
+      width: 100%;
+    }
+    .navbar-modern .nav-link:hover {
+      color: var(--light-blue) !important;
+    }
+    .toggler-icon { font-size: 1.4rem; color: #fff; }
+
+    /* Logout Button */
+    .btn-logout {
+      background: linear-gradient(90deg,var(--accent-orange),var(--accent-orange-dark));
+      color: #fff !important;
+      border-radius: 25px;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+      transition: transform .2s, background .3s;
+    }
+    .btn-logout:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg,var(--accent-orange-hover),#ff9966);
+    }
+
+    /* -------------------- Hero -------------------- */
+   .hero {
+  position: relative;
+    background-image: url("{% static '/img/dash_page.jpg' %}");
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+}
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(13,27,42,0.7), rgba(27,58,87,0.35));
+      z-index: 0;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+
+    }
+
+    
+    .hero .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      width: 100%;
+      padding: 0 1rem;
+      animation: fadeInUp 1.5s ease;
+    }
+    
+    
+    .hero .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      padding: 0 1rem;
+      animation: fadeInUp 1.2s ease both;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .hero p {
+      font-size: clamp(1rem, 1.2vw, 1.25rem);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      color: #e0e6f0;
+    }
+
+    /* CTA Buttons */
+    .btn-primary {
+      background: var(--accent-orange);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 30px;
+      padding: .6rem 1.2rem;
+      transition: background .3s, transform .2s;
+    }
+    .btn-primary:hover {
+      background: var(--accent-orange-dark);
+      transform: translateY(-2px);
+    }
+    .btn-outline-primary {
+      color: var(--dark-navy);
+      border: 2px solid var(--dark-navy);
+      border-radius: 30px;
+      font-weight: 600;
+      transition: background .3s, color .3s;
+    }
+    .btn-outline-primary:hover {
+      background: var(--dark-navy);
+      color: #fff;
+    }
+
+    /* FadeInUp Animation */
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Cards */
+    .card {
+      border-radius: var(--card-radius);
+      box-shadow: var(--soft-shadow);
+      border: none;
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(90deg,var(--dark-navy),var(--steel-blue));
+      color: rgba(255,255,255,0.9);
+      padding: 24px 0;
+      margin-top: 48px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media(max-width:767px){
+      .hero { height: 60vh; }
+      .hero p { font-size: 1rem; }
+      .btn-primary, .btn-outline-primary { padding: .5rem 1rem; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      <span class="logo-text" style="color: #4DA8DA;">FitLife</span>
+
+
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="toggler-icon">☰</span>
+    </button>
+
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+
+        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Workouts</a>
+          <ul class="dropdown-menu shadow-lg rounded-3">
+            
+          <li><a class="dropdown-item" href="{% url 'yoga' %}">Yoga</a></li>
+            <li><a class="dropdown-item" href="{% url 'weightloss' %}">Weight Loss</a></li>
+            <li><a class="dropdown-item" href="{% url 'dietplans' %}">Diet Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'strenghtraining' %}">Strength Training</a></li>
+            <li><a class="dropdown-item" href="{% url 'cardio' %}">Cardio</a></li>
+            <li><a class="dropdown-item" href="{% url 'hiit' %}">HIIT</a></li>
+          </ul>
+        </li>
+<a class="nav-link" href="{% url 'trainers_hub' %}">Trainers</a>
+        <li class="nav-item"><a class="nav-link" href="{% url 'membership' %}">Membership</a></li>
+<li class="nav-item"><a class="nav-link" href="{% url 'progress_page' %}">Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'community' %}">Community</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        <li class="nav-item ms-2">
+          <a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="overlay"></div>
+  <div class="container hero-content text-center">
+    <h1>Welcome to <span class="highlight">FitLife Club</span></h1>
+    <p>Your journey to a healthier and stronger life starts here. Join thousands of members who transformed their fitness routine.</p>
+    <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+      <a href="#workouts" class="btn btn-primary btn-lg">Explore Programs</a>
+      <a href="#membership" class="btn btn-outline-primary btn-lg">View Plans</a>
+    </div>
+    <!-- Optional scroll arrow -->
+    <div class="scroll-down mt-4">
+      <a href="#workouts"><span>⌄</span></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- WORKOUTS -->
+<style>
+/* -------------------- Workout Section -------------------- */
+#workouts .card {
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  background: #fff;
+}
+
+#workouts .card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 20px 35px rgba(0,0,0,0.25);
+}
+
+#workouts .card img {
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+#workouts .card:hover img {
+  transform: scale(1.1);
+}
+
+#workouts .card-title {
+  font-weight: 700;
+  color: #223b6b;
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+
+#workouts .card-text {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+#workouts .btn-primary {
+  border-radius: 30px;
+  background: linear-gradient(135deg, #ff7f50, #ff4757);
+  border: none;
+  transition: all 0.3s ease, transform 0.2s;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+}
+
+#workouts .btn-primary:hover {
+  background: linear-gradient(135deg, #ff6347, #e84118);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 127, 80, 0.3);
+}
+
+/* Search & Filter Controls */
+#workouts .form-control,
+#workouts .form-select {
+  border-radius: 30px;
+  padding: 0.55rem 1.2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+#workouts .form-control:focus,
+#workouts .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 12px rgba(13,110,253,0.25);
+  outline: none;
+}
+
+/* Smooth hide/show */
+.workout-card {
+  transition: all 0.4s ease;
+}
+.workout-card.hide {
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+/* Section Heading */
+#workouts h1 {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 700;
+}
+
+#workouts p {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Responsive tweaks */
+@media(max-width:768px){
+  #workouts .card img {
+    height: 180px;
+  }
+  #workouts .btn-primary {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  #workouts .row.g-4 {
+    row-gap: 1.5rem;
+  }
+}
+</style>
+
+<section id="workouts" class="my-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h1 class="fw-bold">💪 Workout Hub</h1>
+      <p>Explore workouts & find the best one for your fitness goal!</p>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="row mb-4 g-3 align-items-center">
+      <div class="col-md-6">
+        <input type="text" id="searchWorkout" class="form-control" placeholder="🔍 Search workout..." onkeyup="searchWorkouts()">
+      </div>
+      <div class="col-md-6">
+        <select id="filterGoal" class="form-select" onchange="filterWorkouts()">
+          <option value="all">All Goals</option>
+          <option value="fat">🔥 Fat Loss</option>
+          <option value="strength">💪 Strength</option>
+          <option value="endurance">🏃 Endurance</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Workouts Cards -->
+    <div class="row g-4" id="workoutContainer">
+      <div class="col-md-3 workout-card" data-goal="endurance">
+        <div class="card h-100">
+          <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1399&auto=format&fit=crop" class="card-img-top" alt="Yoga">
+          <div class="card-body text-center">
+            <h5 class="card-title">Yoga</h5>
+            <p class="card-text">Flexibility, balance, and calmness</p>
+            <a href="yoga/" class="btn btn-primary btn-sm">Go</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 workout-card" data-goal="fat">
+        <div class="card h-100">
+          <img src="https://images.unsplash.com/photo-1434596922112-19c563067271?q=80&w=870&auto=format&fit=crop" class="card-img-top" alt="HIIT">
+          <div class="card-body text-center">
+            <h5 class="card-title">HIIT</h5>
+            <p class="card-text">High-intensity interval training for fat burn</p>
+            <a href="hiit/" class="btn btn-primary btn-sm">Go</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 workout-card" data-goal="fat">
+        <div class="card h-100">
+          <img src="https://plus.unsplash.com/premium_photo-1661595204058-4d58c114f547?q=80&w=387&auto=format&fit=crop" class="card-img-top" alt="Cardio">
+          <div class="card-body text-center">
+            <h5 class="card-title">Cardio</h5>
+            <p class="card-text">Boost heart health & burn calories</p>
+            <a href="cardio/" class="btn btn-primary btn-sm">Go</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 workout-card" data-goal="strength">
+        <div class="card h-100">
+          <img src="https://images.unsplash.com/photo-1590240092079-a7f1957bb6eb?q=80&w=774&auto=format&fit=crop" class="card-img-top" alt="Strength Training">
+          <div class="card-body text-center">
+            <h5 class="card-title">Strength Training</h5>
+            <p class="card-text">Build muscles and overall strength</p>
+            <a href="strengthtraining/" class="btn btn-primary btn-sm">Go</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function searchWorkouts() {
+      let input = document.getElementById("searchWorkout").value.toLowerCase();
+      document.querySelectorAll(".workout-card").forEach(card => {
+        let title = card.querySelector(".card-title").innerText.toLowerCase();
+        if (title.includes(input)) {
+          card.classList.remove("hide");
+        } else {
+          card.classList.add("hide");
+        }
+      });
+    }
+
+    function filterWorkouts() {
+      let filter = document.getElementById("filterGoal").value;
+      document.querySelectorAll(".workout-card").forEach(card => {
+        let goal = card.getAttribute("data-goal");
+        if (filter === "all" || goal === filter) {
+          card.classList.remove("hide");
+        } else {
+          card.classList.add("hide");
+        }
+      });
+    }
+  </script>
+</section>
+
+
+
+
+<!-- TRAINERS HUB -->
+
+<section id="trainers" class="my-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h1 class="text-center mb-4 fw-bold">🏋️‍♂️ Find Your Perfect Trainer</h1>
+      <p class="text-muted">Smartly matched trainers, nearby experts & top-rated professionals!</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="row g-3 justify-content-center mb-4">
+      <div class="col-md-4 col-12">
+        <select id="userGoal" class="form-select shadow-sm" onchange="updateTrainersHub()">
+          <option value="all">🎯 Select Your Goal</option>
+          <option value="yoga">🧘 Yoga</option>
+          <option value="hiit">🔥 HIIT</option>
+          <option value="cardio">💨 Cardio</option>
+          <option value="strength">💪 Strength</option>
+        </select>
+      </div>
+      <div class="col-md-4 col-12">
+        <input type="text" id="trainerSearch" class="form-control shadow-sm" placeholder="🔍 Search trainer..." onkeyup="filterCarousels()">
+      </div>
+      <div class="col-md-4 col-12">
+        <select id="trainerSpecFilter" class="form-select shadow-sm" onchange="filterCarousels()">
+          <option value="all">All Specializations</option>
+          <option value="yoga">Yoga</option>
+          <option value="hiit">HIIT</option>
+          <option value="cardio">Cardio</option>
+          <option value="strength">Strength</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="text-center mb-4">
+      <button class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">Clear Filters</button>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-3" id="trainerTabs">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#aiRecommended">✨ AI Recommended</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#topRated">⭐ Top Rated</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#nearby">📍 Nearby</button></li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="aiRecommended">
+        <div class="trainer-carousel d-flex gap-3 overflow-auto px-2" id="aiCarousel"></div>
+        <div class="text-center mt-3"><button id="loadMoreAI" class="btn btn-outline-primary btn-sm">Load More</button></div>
+      </div>
+      <div class="tab-pane fade" id="topRated">
+        <div class="trainer-carousel d-flex gap-3 overflow-auto px-2" id="topRatedCarousel"></div>
+        <div class="text-center mt-3"><button id="loadMoreTop" class="btn btn-outline-primary btn-sm">Load More</button></div>
+      </div>
+      <div class="tab-pane fade" id="nearby">
+        <div class="trainer-carousel d-flex gap-3 overflow-auto px-2" id="nearbyCarousel"></div>
+        <div class="text-center mt-3"><button id="loadMoreNearby" class="btn btn-outline-primary btn-sm">Load More</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trainer Modal -->
+<div class="modal fade" id="trainerModal" tabindex="-1" aria-hidden="true" role="dialog" aria-labelledby="trainerModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content shadow-lg rounded-4">
+      <div class="modal-header text-white" style="background: linear-gradient(90deg, #ff7a00, #ff3c00);">
+        <h5 class="modal-title fw-bold" id="trainerModalLabel">Trainer Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="trainerPhoto" class="rounded-circle shadow mb-3" style="width:120px; height:120px; object-fit:cover;" alt="Trainer Photo">
+        <h5 id="trainerName"></h5>
+        <p id="trainerSpecExpRating" class="text-muted small"></p>
+        <p id="trainerAITip" class="fst-italic text-primary"></p>
+        <hr>
+        <h6>Post a Review:</h6>
+        <textarea id="reviewInput" class="form-control mb-2" rows="2" placeholder="Write your review..."></textarea>
+        <button class="btn btn-outline-primary w-100 mb-3" onclick="submitReview()">Submit Review</button>
+        <h6>Book a Session:</h6>
+        <input type="date" id="sessionDate" class="form-control mb-2">
+        <input type="time" id="sessionTime" class="form-control mb-2">
+        <button class="btn btn-primary w-100" onclick="bookSession()">Book Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+#trainers { background: linear-gradient(180deg, #f7f9fb, #fff); padding: 50px 0; }
+.text-gradient { background: linear-gradient(90deg, #ff7a00, #ff3c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.trainer-card { width: 180px; min-width:180px; flex-shrink: 0; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s; border-radius: 18px; overflow: hidden; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px); scroll-snap-align: start; position: relative; opacity:0; }
+.trainer-card:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+.trainer-carousel::-webkit-scrollbar { display: none; }
+.badge-recommended { position: absolute; top: 8px; left: 8px; background: linear-gradient(45deg, gold, orange); padding: 0.3rem 0.6rem; border-radius: 10px; font-size: 0.75rem; }
+.dragging { cursor: grabbing !important; user-select: none; }
+@media(max-width:768px){ .trainer-card{ width:140px; min-width:140px; } }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const batchSize = 10;
+  let aiNext=0, topNext=0, nearbyNext=0;
+  const specs=["yoga","hiit","cardio","strength"];
+  const tips={
+    yoga:["Consistency builds calm.","Stretch gently each morning.","Balance breath with motion."],
+    hiit:["Warm up before intensity.","Short bursts, big results.","Hydrate often!"],
+    cardio:["Track your distance.","Alternate pace to improve stamina.","End strong, cool down slow."],
+    strength:["Form first, weight later.","Rest builds muscles.","Train smart, not just hard."]
+  };
+
+  // Fitness Images from Pexels (static)
+ // Fitness Images from Pexels (25 unique links)
+const fitnessImages = [
+  "https://images.pexels.com/photos/4753985/pexels-photo-4753985.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4498179/pexels-photo-4498179.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4761794/pexels-photo-4761794.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/3763871/pexels-photo-3763871.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4761790/pexels-photo-4761790.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4324026/pexels-photo-4324026.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/317157/pexels-photo-317157.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/414029/pexels-photo-414029.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4324032/pexels-photo-4324032.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4324022/pexels-photo-4324022.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/3830835/pexels-photo-3830835.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4753984/pexels-photo-4753984.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4056736/pexels-photo-4056736.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/3763870/pexels-photo-3763870.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4498175/pexels-photo-4498175.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/1552247/pexels-photo-1552247.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/841131/pexels-photo-841131.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/317156/pexels-photo-317156.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/4324016/pexels-photo-4324016.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/414028/pexels-photo-414028.jpeg?auto=compress&cs=tinysrgb&h=200",
+  "https://images.pexels.com/photos/3830830/pexels-photo-3830830.jpeg?auto=compress&cs=tinysrgb&h=200"
+];
+  const allTrainers=[], topRatedTrainers=[], nearbyTrainers=[];
+  for(let i=1;i<=50;i++){
+    allTrainers.push({
+      name:`Trainer ${i}`,
+      spec:specs[Math.floor(Math.random()*specs.length)],
+      exp:Math.floor(Math.random()*10)+1,
+      rating:(Math.random()*1.5+3.5).toFixed(1),
+      lat:28.6 + Math.random()*0.1,
+      lng:77.1 + Math.random()*0.1,
+      photo: fitnessImages[i % fitnessImages.length]  // <-- static fitness image
+    });
+  }
+
+  const aiCarousel=document.getElementById("aiCarousel");
+  const topRatedCarousel=document.getElementById("topRatedCarousel");
+  const nearbyCarousel=document.getElementById("nearbyCarousel");
+
+  function distanceKm(lat1,lon1,lat2,lon2){
+    const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+    const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+    return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);
+  }
+
+  function createCard(t){
+    const card=document.createElement("div");
+    card.className="trainer-card shadow position-relative";
+    if(t.recommended) card.innerHTML+=`<span class='badge-recommended'>AI Recommended</span>`;
+    if(t.distance) card.innerHTML+=`<span class='badge-new' style='background:#2196F3;position:absolute;top:8px;right:8px;padding:0.2rem 0.4rem;font-size:0.7rem;'>${t.distance} km</span>`;
+    card.innerHTML+=`<img data-src="${t.photo}" class="card-img-top lazy-img" style="height:200px; object-fit:cover;" alt="${t.name}">
+      <div class="card-body text-center p-2">
+        <h6 class="mb-1">${t.name}</h6>
+        <p class="text-muted small mb-0">${t.spec.toUpperCase()} • ${t.exp} yrs</p>
+        <div>${"⭐".repeat(Math.round(t.rating))}</div>
+      </div>`;
+    card.onclick=()=>openTrainerModal(t.name);
+    setTimeout(()=>card.style.opacity=1,50);
+    return card;
+  }
+
+  function lazyLoadImages(carousel){
+    const imgs=carousel.querySelectorAll(".lazy-img");
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const img=entry.target;
+          img.src=img.dataset.src;
+          observer.unobserve(img);
+        }
+      });
+    }, {threshold:0.1});
+    imgs.forEach(img=>observer.observe(img));
+  }
+
+  function renderBatch(carousel,data,startIndex){
+    const endIndex=Math.min(startIndex+batchSize,data.length);
+    for(let i=startIndex;i<endIndex;i++){ carousel.appendChild(createCard(data[i])); }
+    lazyLoadImages(carousel);
+    return endIndex;
+  }
+
+  window.updateTrainersHub=()=>{
+    const goal=document.getElementById("userGoal").value;
+    localStorage.setItem("userGoal",goal);
+
+    allTrainers.forEach(t=>{
+      t.tip=tips[t.spec][Math.floor(Math.random()*tips[t.spec].length)];
+      const matchScore=(goal!=="all"&&t.spec===goal?2:0);
+      t.score=parseFloat(t.rating)+matchScore+(t.exp>3?1:0);
+      t.recommended=t.score>6;
+    });
+
+    topRatedTrainers.splice(0,topRatedTrainers.length,...allTrainers.filter(t=>t.rating>=4.5));
+    nearbyTrainers.splice(0,nearbyTrainers.length,...allTrainers);
+
+    aiCarousel.innerHTML=""; topRatedCarousel.innerHTML=""; nearbyCarousel.innerHTML="";
+    aiNext=topNext=nearbyNext=0;
+
+    aiNext=renderBatch(aiCarousel,allTrainers,aiNext);
+    topNext=renderBatch(topRatedCarousel,topRatedTrainers,topNext);
+    watchNearbyTrainers();
+  };
+
+  function watchNearbyTrainers(){
+    if(!navigator.geolocation){ nearbyCarousel.innerHTML="<p class='text-muted'>Geolocation not supported.</p>"; return; }
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const {latitude,longitude}=pos.coords;
+      nearbyTrainers.forEach(t=>t.distance=distanceKm(latitude,longitude,t.lat,t.lng));
+      nearbyTrainers.sort((a,b)=>a.distance-b.distance);
+      nearbyCarousel.innerHTML=""; nearbyNext=0;
+      nearbyNext=renderBatch(nearbyCarousel,nearbyTrainers,nearbyNext);
+    },()=>{ nearbyCarousel.innerHTML="<p class='text-muted'>Location access denied.</p>"; });
+  }
+
+  ["loadMoreAI","loadMoreTop","loadMoreNearby"].forEach(id=>{
+    document.getElementById(id).onclick=()=>{
+      let carousel,data,next;
+      if(id==="loadMoreAI"){ carousel=aiCarousel; data=allTrainers; next=aiNext; aiNext=renderBatch(carousel,data,next); if(aiNext>=data.length) document.getElementById(id).style.display="none"; }
+      if(id==="loadMoreTop"){ carousel=topRatedCarousel; data=topRatedTrainers; next=topNext; topNext=renderBatch(carousel,data,next); if(topNext>=data.length) document.getElementById(id).style.display="none"; }
+      if(id==="loadMoreNearby"){ carousel=nearbyCarousel; data=nearbyTrainers; next=nearbyNext; nearbyNext=renderBatch(carousel,data,next); if(nearbyNext>=data.length) document.getElementById(id).style.display="none"; }
+    };
+  });
+
+  window.clearFilters=()=>{ document.getElementById("trainerSearch").value=""; document.getElementById("trainerSpecFilter").value="all"; document.getElementById("userGoal").value="all"; updateTrainersHub(); };
+
+  window.filterCarousels=()=>{
+    const search=document.getElementById("trainerSearch").value.toLowerCase();
+    const spec=document.getElementById("trainerSpecFilter").value;
+    [aiCarousel, topRatedCarousel, nearbyCarousel].forEach(carousel=>{
+      carousel.querySelectorAll(".trainer-card").forEach(c=>{
+        const name=c.querySelector("h6").innerText.toLowerCase();
+        const s=c.querySelector("p").innerText.toLowerCase();
+        c.style.display=name.includes(search)&&(spec==="all"||s.includes(spec))?"":"none";
+      });
+    });
+  };
+
+  window.openTrainerModal=name=>{
+    const t=allTrainers.find(x=>x.name===name); if(!t) return;
+    document.getElementById("trainerPhoto").src=t.photo;
+    document.getElementById("trainerName").innerText=t.name;
+    document.getElementById("trainerSpecExpRating").innerText=`${t.spec.toUpperCase()} • ${t.exp} yrs • ${"⭐".repeat(Math.round(t.rating))}`;
+    document.getElementById("trainerAITip").innerText=`💡 Tip: ${t.tip}`;
+    new bootstrap.Modal(document.getElementById('trainerModal')).show();
+  };
+
+  window.submitReview=()=>{ const review=document.getElementById("reviewInput").value.trim(); if(review) alert(`✅ Review added!`); };
+  window.bookSession=()=>{ const d=document.getElementById("sessionDate").value, t=document.getElementById("sessionTime").value; if(d&&t) alert(`📅 Session booked on ${d} at ${t}`); else alert("⚠️ Please select date & time."); };
+
+  function makeCarouselDraggable(carousel){
+    let isDown=false,startX,scrollLeft;
+    carousel.addEventListener("mousedown",e=>{isDown=true;carousel.classList.add("dragging");startX=e.pageX-carousel.offsetLeft;scrollLeft=carousel.scrollLeft;});
+    ["mouseleave","mouseup"].forEach(ev=>carousel.addEventListener(ev,()=>{isDown=false;carousel.classList.remove("dragging");}));
+    carousel.addEventListener("mousemove",e=>{if(!isDown)return;e.preventDefault();carousel.scrollLeft=scrollLeft-(e.pageX-startX)*2;});
+    carousel.addEventListener("touchstart",e=>{startX=e.touches[0].pageX-carousel.offsetLeft;scrollLeft=carousel.scrollLeft;});
+    carousel.addEventListener("touchmove",e=>{carousel.scrollLeft=scrollLeft-(e.touches[0].pageX-startX)*2;});
+  }
+  document.querySelectorAll(".trainer-carousel").forEach(c=>makeCarouselDraggable(c));
+
+  updateTrainersHub();
+});
+</script>
+
+
+
+<!-- MEMBERSHIP -->
+<style>
+/* MEMBERSHIP STYLES */
+#membership .card {
+    overflow: hidden;
+    border-radius: 20px;
+    min-height: 360px;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.5s ease;
+    position: relative;
+    border: none;
+}
+
+/* Hover effect */
+#membership .card:hover {
+    transform: translateY(-10px) scale(1.04);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+/* Card headers */
+#membership .card .card-header {
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+    border: none;
+}
+
+/* Plan backgrounds */
+#membership .card.basic { 
+    background: linear-gradient(135deg,#223b6b,#1b3a57);
+    color: #f0f4f8;
+}
+
+#membership .card.pro { 
+    background: linear-gradient(135deg,#ffb457,#ff7f50);
+    color: #0d1b2a;
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+#membership .card.premium { 
+    background: linear-gradient(135deg,#0d1b2a,#16263b);
+    color: #f0f4f8;
+}
+
+/* Popular badge */
+#membership .badge-popular {
+    background: #ff4757;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.3em 0.6em;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+/* Plan pricing */
+#membership .card h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Plan features */
+#membership .card ul {
+    padding-left: 0;
+    margin: 1.2rem 0;
+}
+#membership .card ul li {
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Buttons */
+#membership .btn {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.3s ease;
+}
+
+#membership .btn-outline-primary {
+    color: #fff;
+    border-color: #fff;
+}
+#membership .btn-outline-primary:hover {
+    background: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+    box-shadow: 0 8px 20px rgba(13,110,253,0.35);
+}
+
+#membership .btn-primary {
+    background: linear-gradient(135deg,#ff7f50,#ff4757);
+    border: none;
+}
+#membership .btn-primary:hover {
+    background: linear-gradient(135deg,#ff6347,#e84118);
+    box-shadow: 0 8px 20px rgba(255,71,87,0.35);
+}
+
+/* Mobile adjustments */
+@media(max-width: 768px){
+    #membership .card h3 { font-size: 1.6rem; }
+    #membership .card ul li { font-size: 0.95rem; }
+    #membership .card { min-height: auto; }
+}
+</style>
+
+<section id="membership" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold">🏅 Choose Your Membership Plan</h1>
+            <p class="text-muted">Pick the plan that fits your fitness goals!</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+
+            <!-- BASIC PLAN -->
+            <div class="col-md-4">
+                <div class="card basic text-center p-4 h-100">
+                    <div class="card-header text-warning">Basic</div>
+                    <div class="card-body">
+                        <h3>$19 <small class="text-white-50">/month</small></h3>
+                        <ul class="list-unstyled text-start">
+                            <li>💪 Basic workouts access</li>
+                            <li>🧘 Community support</li>
+                            <li>📅 Limited trainer sessions</li>
+                        </ul>
+                        <a href="{% url 'create_transaction' 1 %}" class="btn btn-outline-primary w-100">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRO PLAN -->
+            <div class="col-md-4">
+                <div class="card pro text-center p-4 h-100">
+                    <div class="card-header">
+                        Pro <span class="badge-popular">Popular</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>$39 <small class="text-dark">/month</small></h3>
+                        <ul class="list-unstyled text-start">
+                            <li>🏋️ All workouts access</li>
+                            <li>📈 Progress tracking</li>
+                            <li>🥗 Nutrition guidance</li>
+                            <li>💬 Priority support</li>
+                        </ul>
+                        <a href="{% url 'create_transaction' 2 %}" class="btn btn-primary w-100">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREMIUM PLAN -->
+            <div class="col-md-4">
+                <div class="card premium text-center p-4 h-100">
+                    <div class="card-header text-white">Premium</div>
+                    <div class="card-body">
+                        <h3>$59 <small class="text-white-50">/month</small></h3>
+                        <ul class="list-unstyled text-start">
+                            <li>💪 All Pro features</li>
+                            <li>🤝 1-on-1 Trainer Sessions</li>
+                            <li>🥗 Custom Nutrition Plans</li>
+                            <li>🎥 Exclusive Webinars</li>
+                        </ul>
+                        <a href="{% url 'create_transaction' 3 %}" class="btn btn-outline-primary w-100">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+<!-- PROGRESS -->
+
+
+<style>
+/* ------------------ Cards ------------------ */
+.card { border:none; }
+.summary-card { 
+    padding:20px; border-radius:12px; background:linear-gradient(145deg,#fff,#f1f3f5); 
+    box-shadow:0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; 
+}
+.summary-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.15); }
+
+/* Glowing effect for summary cards */
+@keyframes cardGlow {
+  0% { box-shadow: 0 0 10px rgba(0,0,0,0.1); transform: scale(1); }
+  50% { box-shadow: 0 0 25px rgba(255,255,255,0.7); transform: scale(1.03); }
+  100% { box-shadow: 0 0 10px rgba(0,0,0,0.1); transform: scale(1); }
+}
+.glow-green { animation: cardGlow 1.2s ease-in-out; }
+.glow-blue { animation: cardGlow 1.2s ease-in-out; }
+.glow-orange { animation: cardGlow 1.2s ease-in-out; }
+
+/* Progress Bars */
+.progress-container { background-color:#e9ecef; border-radius:12px; padding:15px; margin-bottom:15px; }
+.progress-bar { 
+    height:28px; line-height:28px; color:#fff; font-weight:bold; border-radius:12px; 
+    transition: width 1.2s ease-in-out, box-shadow 0.5s;
+    background-size: 200% 100%; 
+    animation: gradientWave 3s linear infinite;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+.progress-bar-glow {
+    animation: glowEffect 2s ease-in-out infinite alternate, gradientWave 3s linear infinite;
+}
+@keyframes gradientWave {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+@keyframes glowEffect {
+    0% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+    100% { box-shadow: 0 0 20px rgba(255,255,255,0.7); }
+}
+
+/* Table */
+.table thead th { border-bottom:2px solid #dee2e6; color:#212529; }
+.table tbody tr:hover { background:#f0f8ff; transition: background 0.3s; }
+.table tbody tr.highlight { background:#e0f7fa; font-weight:500; }
+.no-data { 
+    text-align:center; padding:50px 20px; color:#6c757d; font-size:1.2rem; opacity:0; 
+    transition: opacity 0.8s ease-in-out;
+}
+.no-data.show { opacity:1; }
+
+/* Headings */
+h1,h2,h4,h5 { color:#212529; }
+
+/* Dropdown */
+.toggle-dropdown { text-align:center; margin-bottom:20px; }
+
+/* ------------------ Responsive Layout ------------------ */
+@media (min-width: 768px){
+  .summary-row { display:flex; justify-content:center; gap:20px; }
+  .summary-card { flex:1; max-width:220px; }
+}
+@media (max-width: 767px){
+  .summary-row { display:flex; flex-direction:column; align-items:center; gap:15px; }
+  .summary-card { width:80%; }
+}
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">FitLife</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">☰</button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Workouts</a>
+          <ul class="dropdown-menu shadow-lg rounded-3">
+            <li><a class="dropdown-item" href="{% url 'yoga' %}">Yoga</a></li>
+            <li><a class="dropdown-item" href="{% url 'weightloss' %}">Weight Loss</a></li>
+            <li><a class="dropdown-item" href="{% url 'dietplans' %}">Diet Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'strenghtraining' %}">Strength Training</a></li>
+            <li><a class="dropdown-item" href="{% url 'hiit' %}">HIIT</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainers_hub' %}">Trainers</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'membership' %}">Membership</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'progress_page' %}">Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'community' %}">Community</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        <li class="nav-item ms-2"><a class="btn btn-logout" href="{% url 'logout' %}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section id="progress" class="py-5">
+<div class="container">
+  <div class="text-center mb-5">
+    <h1 class="fw-bold">📈 Progress</h1>
+    <p class="text-muted">Track your exercises, duration, and calories burned</p>
+  </div>
+
+  <div class="toggle-dropdown mb-4">
+      <select class="form-select w-auto mx-auto" id="periodSelect" onchange="updateView(this.value)">
+          <option value="today" selected>Today</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+      </select>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-row mb-4">
+    <div class="summary-card" id="card-total-workouts"><h5>Total Workouts</h5><h2 id="total-workouts">0</h2></div>
+    <div class="summary-card" id="card-total-duration"><h5>Total Duration (min)</h5><h2 id="total-duration">0</h2></div>
+    <div class="summary-card" id="card-total-calories"><h5>Total Calories</h5><h2 id="total-calories">0</h2></div>
+  </div>
+
+  <!-- Progress Bars -->
+  <div id="progress-bars" class="card shadow-sm rounded p-3 mb-5 bg-white">
+      <h4 class="mb-3">Progress by Exercise Type</h4>
+      <div class="progress-container mb-3">
+        <h6>Yoga</h6>
+        <div class="progress"><div id="yoga-progress" class="progress-bar progress-bar-glow" style="width:0%; background: linear-gradient(270deg,#16a34a,#34d399,#16a34a);">0%</div></div>
+      </div>
+      <div class="progress-container mb-3">
+        <h6>HIIT</h6>
+        <div class="progress"><div id="hiit-progress" class="progress-bar progress-bar-glow" style="width:0%; background: linear-gradient(270deg,#f97316,#fb923c,#f97316);">0%</div></div>
+      </div>
+      <div class="progress-container mb-3">
+        <h6>Strength Training</h6>
+        <div class="progress"><div id="strength-training-progress" class="progress-bar progress-bar-glow" style="width:0%; background: linear-gradient(270deg,#1d4ed8,#3b82f6,#1d4ed8);">0%</div></div>
+      </div>
+  </div>
+
+  <!-- Exercise Table -->
+  <div class="card shadow-sm rounded p-3 mb-5 bg-white">
+      <h4 class="mb-3">Exercise History</h4>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead><tr><th>Date</th><th>Exercise</th><th>Duration (min)</th><th>Calories Burned</th></tr></thead>
+          <tbody id="exercise-table">
+            <tr class="no-data"><td colspan="4">No exercises found for this period.</td></tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+
+  <!-- Line Chart -->
+  <div class="card shadow-sm rounded p-3 bg-white mb-5">
+      <h4 class="mb-3">Calories Burned (Trend)</h4>
+      <canvas id="progressChart" style="width:100%; height:350px;"></canvas>
+  </div>
+</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let chart;
+const exerciseTypes = ['Yoga','HIIT','Strength Training'];
+
+function glowCard(cardId, colorClass){
+    const card = document.getElementById(cardId);
+    if(!card) return;
+    card.classList.remove('glow-green','glow-blue','glow-orange');
+    void card.offsetWidth; 
+    card.classList.add(colorClass);
+}
+
+function animateCounterWithGlow(id, value, cardId, colorClass) {
+    const el = document.getElementById(id);
+    if(!el) return;
+    const duration = 1000;
+    const startTime = performance.now();
+    function step(now){
+        const progress = Math.min((now-startTime)/duration,1);
+        const eased = progress*(2-progress); 
+        el.innerText = Math.round(eased*value);
+        if(progress<1) requestAnimationFrame(step);
+        else glowCard(cardId, colorClass);
+    }
+    requestAnimationFrame(step);
+}
+
+function animateProgress(id, value, total){
+    const bar = document.getElementById(id);
+    if(!bar) return;
+    const percent = total ? Math.round((value/total)*100) : 0;
+    const duration = 1200;
+    const startTime = performance.now();
+    function step(now){
+        const progress = Math.min((now-startTime)/duration,1);
+        const eased = progress*(2-progress);
+        const width = Math.round(eased*percent);
+        bar.style.width = width+'%';
+        bar.innerText = width+'%';
+        if(progress<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+function showNoData() {
+    const tbody = document.getElementById('exercise-table');
+    tbody.innerHTML = '<tr class="no-data"><td colspan="4">No exercises found for this period.</td></tr>';
+    setTimeout(()=> tbody.querySelector('.no-data').classList.add('show'),50);
+}
+
+function updateView(period){
+    fetch(`/api/exercises/?period=${period}`)
+        .then(res=>res.json())
+        .then(data=>renderDashboard(data))
+        .catch(err=>console.error(err));
+}
+
+function renderDashboard(exercises){
+    const totalWorkouts = exercises.length;
+    const totalDuration = exercises.reduce((a,b)=>a+b.duration,0);
+    const totalCalories = exercises.reduce((a,b)=>a+b.calories,0);
+
+    animateCounterWithGlow('total-workouts', totalWorkouts, 'card-total-workouts','glow-green');
+    animateCounterWithGlow('total-duration', totalDuration, 'card-total-duration','glow-blue');
+    animateCounterWithGlow('total-calories', totalCalories, 'card-total-calories','glow-orange');
+
+    const typeTotals = {};
+    exerciseTypes.forEach(t=>typeTotals[t]=0);
+
+    const tableBody = document.getElementById('exercise-table');
+    tableBody.innerHTML='';
+    if(totalWorkouts===0){
+        showNoData();
+        exerciseTypes.forEach(type=>{
+            animateProgress(type.toLowerCase().replace(' ','-')+'-progress',0,1);
+        });
+        if(chart) chart.destroy();
+        return;
+    }
+
+    exercises.forEach((ex,i)=>{
+        const exName = ex.name.trim().toLowerCase();
+        let key = null;
+        if(exName.includes('yoga')) key='Yoga';
+        else if(exName.includes('hiit')) key='HIIT';
+        else if(exName.includes('strength')) key='Strength Training';
+        if(key) typeTotals[key] += ex.calories;
+
+        const row = document.createElement('tr');
+        if(i===exercises.length-1) row.classList.add('highlight');
+        row.innerHTML = `<td>${ex.date}</td><td>${ex.name}</td><td>${ex.duration}</td><td>${ex.calories}</td>`;
+        tableBody.appendChild(row);
+    });
+
+    exerciseTypes.forEach(type=>{
+        animateProgress(type.toLowerCase().replace(' ','-')+'-progress', typeTotals[type], totalCalories);
+    });
+
+    // Chart
+    const grouped = {};
+    exercises.forEach(e=>{
+        if(!grouped[e.date]) grouped[e.date]={}; 
+        exerciseTypes.forEach(t=>grouped[e.date][t]=0);
+        const exName = e.name.trim().toLowerCase();
+        let key = null;
+        if(exName.includes('yoga')) key='Yoga';
+        else if(exName.includes('hiit')) key='HIIT';
+        else if(exName.includes('strength')) key='Strength Training';
+        if(key) grouped[e.date][key] += e.calories;
+    });
+
+    const labels = Object.keys(grouped).sort();
+    const datasets = exerciseTypes.map(t=>({
+        label: t,
+        data: labels.map(d=>grouped[d][t]),
+        borderColor: t==='Yoga'?'#16a34a':t==='HIIT'?'#f97316':'#1d4ed8',
+        backgroundColor:'rgba(0,0,0,0.05)',
+        tension:0.3, fill:true, pointRadius:5, pointHoverRadius:10
+    }));
+
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    if(chart) chart.destroy();
+    chart = new Chart(ctx,{
+        type:'line',
+        data:{labels,datasets},
+        options:{
+            responsive:true,
+            interaction:{mode:'index',intersect:false},
+            plugins:{tooltip:{mode:'nearest', intersect:true}},
+            scales:{y:{beginAtZero:true}}
+        }
+    });
+}
+
+updateView('today');
+</script>
+
+
+
+
+
+  <!-- COMMUNITY -->
+
+
+<style>
+#community .post-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 12px;
+}
+#community .post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+#notificationArea {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#feed img {
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+#feed img:hover {
+    transform: scale(1.02);
+}
+
+.btn-like, .btn-comment, .btn-bookmark, .btn-share, .btn-delete {
+    font-size: 0.8rem;
+    padding: 3px 6px;
+    transition: transform 0.2s, background 0.2s;
+}
+.btn-like:hover, .btn-comment:hover, .btn-bookmark:hover, .btn-share:hover, .btn-delete:hover {
+    transform: scale(1.08);
+}
+
+input, textarea { border-radius: 6px; }
+
+@media(max-width:768px){ 
+    #feed .col-12 { padding-left:0; padding-right:0; } 
+}
+
+/* --- Fullscreen Image Modal --- */
+#imageModal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    padding-top: 60px;
+    left: 0; top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+}
+#imageModal img {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 8px;
+}
+#imageModal span {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style>
+
+
+<section id="community" class="py-4">
+<div class="container">
+  <div class="text-center mb-4">
+    <h1 class="fw-bold">🏋️‍♂️ Community Feed</h1>
+    <p class="text-muted">Connect with others and share your fitness journey!</p>
+  </div>
+
+  <!-- Online Users -->
+  <div class="text-center mb-2">
+      Online Users: <span id="onlineUsers">1</span>
+  </div>
+
+  <!-- Notification Area -->
+  <div id="notificationArea"></div>
+
+  <!-- Create Post -->
+  <div class="card mb-3 shadow-sm p-3 post-card">
+      <h5>Create a Post</h5>
+      <input type="text" id="username" class="form-control mb-2" placeholder="Your Name">
+      <textarea id="postText" class="form-control mb-2" rows="2" placeholder="What's on your mind?"></textarea>
+      <input type="file" id="postImage" class="form-control mb-2" accept="image/*">
+      <div id="imagePreview" class="mb-2"></div>
+      <button class="btn btn-primary w-100 btn-sm" onclick="createPost()">Post</button>
+  </div>
+
+  <!-- Feed -->
+  <div id="feed" class="row g-2"></div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal">
+    <span id="closeModal">&times;</span>
+    <img id="modalImage" src="" alt="Full View">
+</div>
+
+<script>
+// ----- Global Variables -----
+let feedContainer = document.getElementById("feed");
+let posts = JSON.parse(localStorage.getItem("posts")) || [];
+let currentUser = "";
+
+// Generate unique ID for each post
+function generateId() { return '_' + Math.random().toString(36).substr(2, 9); }
+
+// ----- Online Users -----
+function updateOnlineUsers(){
+    const onlineCount = Math.floor(Math.random()*10)+1;
+    document.getElementById("onlineUsers").textContent = onlineCount;
+}
+setInterval(updateOnlineUsers, 5000);
+
+// ----- Notifications -----
+function showNotification(message){
+    const notif = document.createElement("div");
+    notif.className = "alert alert-info position-fixed top-0 end-0 m-3";
+    notif.style.zIndex = 10000;
+    notif.innerText = message;
+    document.body.appendChild(notif);
+    setTimeout(()=> notif.remove(), 3000);
+}
+
+// ----- Image Preview -----
+document.getElementById('postImage').addEventListener('change', function(){
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    if(this.files && this.files[0]){
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(this.files[0]);
+        img.style.maxHeight = '150px';
+        img.className = 'rounded';
+        preview.appendChild(img);
+    }
+});
+
+// ----- Render Posts -----
+function renderPosts() {
+    feedContainer.innerHTML = "";
+    if(posts.length === 0){
+        feedContainer.innerHTML = `<div class="text-center p-4 col-12">
+            <img src="https://source.unsplash.com/200x150/?community,fitness" alt="No posts" class="mb-3 rounded" style="max-width:100%;">
+            <h5 class="fw-bold">No posts yet</h5>
+            <p class="text-muted">Be the first to share your fitness journey!</p>
+        </div>`;
+        return;
+    }
+
+    const sortedPosts = [...posts].sort((a,b)=>b.timestamp - a.timestamp);
+
+    sortedPosts.forEach(post=>{
+        const colDiv = document.createElement("div");
+        colDiv.className="col-12";
+        colDiv.id = `post-${post.id}`;
+        colDiv.innerHTML = `
+            <div class="card p-2 shadow-sm post-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div><strong>${post.username}</strong></div>
+                    <div class="d-flex gap-1 flex-wrap">
+                        <button class="btn btn-sm btn-outline-primary btn-like" id="like-${post.id}">👍 ${post.likes}</button>
+                        <button class="btn btn-sm btn-outline-secondary btn-comment" onclick="toggleComments('${post.id}')">💬 ${post.comments.length}</button>
+                        <button class="btn btn-sm btn-outline-success btn-bookmark" id="bookmark-${post.id}">🔖 ${post.bookmarked?'Saved':'Save'}</button>
+                        <button class="btn btn-sm btn-outline-info btn-share" onclick="sharePost('${encodeURIComponent(post.text)}')">📤</button>
+                        <button class="btn btn-sm btn-outline-danger btn-delete" id="delete-${post.id}">🗑️</button>
+                    </div>
+                </div>
+                ${post.image? `<img src="${post.image}" class="mb-2 rounded w-100 post-img" onclick="openImageModal('${post.image}')">` : ""}
+                <p style="margin-bottom:5px;">${post.text}</p>
+                <div id="comments-${post.id}" class="mt-2" style="display:none;">
+                    <input type="text" id="commentInput-${post.id}" class="form-control form-control-sm mb-1" placeholder="Add comment..." onkeypress="if(event.key==='Enter'){addComment('${post.id}');}">
+                    <ul class="list-group" id="commentList-${post.id}">
+                        ${post.comments.map(c=>`<li class="list-group-item p-1">${c}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>`;
+        feedContainer.appendChild(colDiv);
+
+        // Bind live events
+        document.getElementById(`like-${post.id}`).addEventListener('click',()=>{ likePost(post.id); });
+        document.getElementById(`bookmark-${post.id}`).addEventListener('click',()=>{ bookmarkPost(post.id); });
+        document.getElementById(`delete-${post.id}`).addEventListener('click',()=>{ deletePost(post.id); });
+    });
+}
+
+// ----- Post Actions -----
+function createPost(){
+    const username = document.getElementById("username").value.trim() || "Anonymous";
+    currentUser = username;
+    const text = document.getElementById("postText").value.trim();
+    const imageInput = document.getElementById("postImage");
+
+    if(!text && !imageInput.files[0]) { alert("Post cannot be empty!"); return; }
+
+    const newPost = {
+        id: generateId(),
+        username,
+        text,
+        image: null,
+        likes: 0,
+        comments: [],
+        bookmarked: false,
+        timestamp: Date.now()
+    };
+
+    if(imageInput.files[0]){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            newPost.image = e.target.result;
+            posts.push(newPost);
+            localStorage.setItem("posts", JSON.stringify(posts));
+            renderPosts();
+            scrollToPost(newPost.id);
+            clearForm();
+            showNotification(`${username} just posted! 🎉`);
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+    } else {
+        posts.push(newPost);
+        localStorage.setItem("posts", JSON.stringify(posts));
+        renderPosts();
+        scrollToPost(newPost.id);
+        clearForm();
+        showNotification(`${username} just posted! 🎉`);
+    }
+}
+
+function scrollToPost(postId){
+    const elem = document.getElementById(`post-${postId}`);
+    if(elem) elem.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function likePost(postId){
+    const post = posts.find(p=>p.id===postId);
+    post.likes++;
+    document.getElementById(`like-${post.id}`).innerText = `👍 ${post.likes}`;
+    localStorage.setItem("posts", JSON.stringify(posts));
+}
+
+function addComment(postId){
+    const input = document.getElementById(`commentInput-${postId}`);
+    const val = input.value.trim();
+    if(val){
+        const post = posts.find(p=>p.id===postId);
+        post.comments.push(`${currentUser}: ${val}`);
+        input.value = '';
+        const ul = document.getElementById(`commentList-${post.id}`);
+        const li = document.createElement('li');
+        li.className = "list-group-item p-1";
+        li.innerText = `${currentUser}: ${val}`;
+        ul.appendChild(li);
+        document.querySelector(`.btn-comment`).innerText = `💬 ${post.comments.length}`;
+        localStorage.setItem("posts", JSON.stringify(posts));
+    }
+}
+
+function toggleComments(postId){
+    const div = document.getElementById(`comments-${postId}`);
+    div.style.display = div.style.display==='none'?'block':'none';
+}
+
+function bookmarkPost(postId){
+    const post = posts.find(p=>p.id===postId);
+    post.bookmarked = !post.bookmarked;
+    document.getElementById(`bookmark-${post.id}`).innerText = post.bookmarked ? '🔖 Saved' : '🔖 Save';
+    localStorage.setItem("posts", JSON.stringify(posts));
+}
+
+function deletePost(postId){
+    if(confirm("Are you sure you want to delete this post? 🗑️")){
+        posts = posts.filter(p=>p.id!==postId);
+        document.getElementById(`post-${postId}`).remove();
+        localStorage.setItem("posts", JSON.stringify(posts));
+        showNotification("A post was deleted 🗑️");
+    }
+}
+
+function sharePost(content){
+    const text = decodeURIComponent(content);
+    if(navigator.share){
+        navigator.share({ title:"Fitness Post", text, url:window.location.href });
+    } else {
+        prompt("Copy this text to share:", text);
+    }
+}
+
+// ----- Full Image Modal -----
+function openImageModal(src) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    modal.style.display = "block";
+    modalImg.src = src;
+}
+document.getElementById("closeModal").onclick = function() {
+    document.getElementById("imageModal").style.display = "none";
+};
+document.getElementById("imageModal").addEventListener("click", function(e) {
+    if (e.target === this) this.style.display = "none";
+});
+
+// ----- Initialize -----
+renderPosts();
+updateOnlineUsers();
+</script>
+
+
+  <!-- CONTACT -->
+
+
+<style>
+ /* Contact cards */
+ #contact .card { border-radius: 12px; }
+
+ /* Success message animation */
+ .alert-success {
+     opacity: 0;
+     transform: translateY(-20px);
+     transition: opacity 0.5s ease, transform 0.5s ease;
+ }
+ .alert-success.show {
+     opacity: 1;
+     transform: translateY(0);
+ }
+</style>
+
+<section id="contact" class="my-5">
+  <div class="container">
+    <h1 class="text-center mb-4 fw-bold">📩 Contact Us</h1>
+    <p class="text-center text-muted mb-5">Have questions, feedback, or suggestions? We’d love to hear from you!</p>
+
+    <div class="row g-4">
+      <div class="col-md-5">
+        <div class="card shadow-sm p-4 h-100">
+          <h5>📍 Address</h5>
+          <p>FitLife Gym, Near ABC Road, Ahmedabad</p>
+
+          <h5>📞 Phone</h5>
+          <p><a href="tel:+916353523350" class="text-decoration-none">+91 63535 23350</a></p>
+
+          <h5>✉️ Email</h5>
+          <p><a href="mailto:prachipatel4706@gmail.com" class="text-decoration-none">prachipatel4706@gmail.com</a></p>
+
+          <h5>🌐 Follow Us</h5>
+          <a href="#" class="me-2"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384031.png" width="30" alt="insta"></a>
+          <a href="#" class="me-2"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384033.png" width="30" alt="twitter"></a>
+          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384030.png" width="30" alt="fb"></a>
+        </div>
+      </div>
+
+      <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+
+          <!-- Success Messages -->
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success show">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="POST" action="{% url 'contact' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="name" class="form-label">Your Name</label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Your Email</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="message" class="form-label">Your Message</label>
+              <textarea class="form-control" id="message" name="message" rows="4" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 ">Send Message</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3679.826569585!2d72.57136231503992!3d23.022505984948955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84f7e9a5a6f7%3A0x74b01d1edb1eb2e!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1694012034459!5m2!1sen!2sin"
+            width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Optional: Fade out success message after 3 seconds -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const alerts = document.querySelectorAll('.alert-success');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.remove('show');
+        alert.style.display = 'none';
+      }, 3000); // 3 seconds
+    });
+  });
+</script>
+
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container text-center">
+      <p class="mb-0">&copy; 2025 FitLife. All rights reserved.</p>
+      <small class="d-block text-white-50">Designed with ❤️ for your fitness journey</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Logout{% endblock title %}
+
+{% block body %}
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-dark-gradient">
+    <div class="card shadow p-4 text-center" style="max-width: 500px; width: 100%;">
+        <h2 class="text-primary fw-bold mb-3" role="alert">You have been logged out successfully!</h2>
+        <p class="text-secondary mb-4">
+            Thank you for visiting. Please 
+            <a href="{% url 'login' %}" class="text-decoration-none text-info fw-semibold">login</a> 
+            again to continue.
+        </p>
+        <a href="{% url 'home' %}" class="btn btn-warning fw-semibold px-4 py-2 rounded-pill">
+            Go to Home
+        </a>
+    </div>
+</div>
+
+<!-- Custom gradient background via CSS -->
+<style>
+.bg-dark-gradient {
+    background: linear-gradient(135deg, #0d1b2a, #1b263b);
+}
+</style>
+{% endblock body %}

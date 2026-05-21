@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Weight Loss{% endblock title %}
+
+{% block body %}
+<style>
+
+  /* Hero Section */
+
+  .hero-content{
+  position:relative;
+  text-align:center;
+  color:#fff;
+}
+
+.hero-content p{
+  font-size:1.1rem;
+  opacity:.9;
+}
+
+  /* Hero */
+  .hero{
+  height:350px;
+  background:url('https://www.cozmoderm.com/wp-content/uploads/2023/02/fat-loss.jpg') center/cover no-repeat;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  color:white;
+  }
+  .hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(13,27,42,0.7), rgba(27,58,87,0.35));
+  }
+  .hero h2{
+  z-index:1;
+  font-size:2.5rem;
+  text-shadow:2px 2px 10px black;
+  }
+
+h2{font-weight:700}
+
+.section-title{
+text-align:center;
+font-size:2rem;
+margin:40px 0;
+color:var(--primary);
+}
+</style>
+<!-- Hero Section -->
+
+  
+  <section class="hero">
+  <div class="hero-content">
+    <h2 id="greeting">Weight Loss Dashboard</h2>
+    <p>     Your daily workout routine designed to maximize fat loss while improving strength and endurance.
+</p>
+  </div>
+</section>
+
+
+<!-- Calorie & Macro Calculator -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">AI Calorie & Macro Calculator</h2>
+    
+    <form id="calcForm" class="row g-3 shadow p-4 bg-white rounded-4">
+      <div class="col-sm-6 col-md-2">
+        <input type="number" class="form-control" id="age" placeholder="Age" required>
+      </div>
+      <div class="col-sm-6 col-md-2">
+        <input type="number" class="form-control" id="height" placeholder="Height (cm)" required>
+      </div>
+      <div class="col-sm-6 col-md-2">
+        <input type="number" class="form-control" id="weight" placeholder="Weight (kg)" required>
+      </div>
+      <div class="col-sm-6 col-md-2">
+        <select class="form-select" id="gender" required>
+          <option value="">Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-2">
+        <select class="form-select" id="activity" required>
+          <option value="">Activity Level</option>
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Lightly Active</option>
+          <option value="1.55">Moderately Active</option>
+          <option value="1.725">Very Active</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-2 text-center">
+        <button type="submit" class="btn btn-primary btn-lg shadow-sm w-100">Calculate</button>
+      </div>
+    </form>
+
+    <div id="result" class="mt-4 text-center fs-5 fw-bold"></div>
+    <canvas id="macroChart" height="200" class="mt-4"></canvas>
+    <div class="text-center mt-3">
+      <button class="btn btn-success"  onclick="downloadPDF()">Download Full PDF Report</button>
+    </div>
+  </div>
+</section>
+
+<!-- 1-Day AI Meal Plan -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <h2 class="text-center mb-4">AI Suggested Meals for Today</h2>
+
+    <div class="row g-4" id="dayMealPlan"></div>
+  </div>
+</section>
+
+<!-- AI Workout Plan -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">AI Workout Plan</h2>
+    <div id="workoutPlan" class="text-center"></div>
+  </div>
+</section>
+
+<!-- Weekly Weight Tracker -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <h2 class="text-center mb-4">Progress Tracker</h2>
+    <div class="d-flex justify-content-center align-items-center mb-3 gap-2 flex-wrap">
+      <input type="number" id="weekWeight" placeholder="This week's weight (kg)" class="form-control w-auto">
+      <button class="btn btn-success" onclick="logWeight()">Add</button>
+    </div>
+    <div class="card shadow-sm p-3 bg-light rounded-4">
+      <canvas id="progressChart" height="100"></canvas>
+    </div>
+  </div>
+</section>
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// Default weight log
+let weightLog = JSON.parse(localStorage.getItem("weightLog")) || [70, 69, 68, 67];
+
+// Log weight and update chart
+function logWeight() {
+    const input = document.getElementById("weekWeight");
+    const newWeight = parseFloat(input.value);
+    if (!isNaN(newWeight)) {
+        weightLog.push(newWeight);
+        localStorage.setItem("weightLog", JSON.stringify(weightLog));
+        updateChart();
+        input.value = "";
+    }
+}
+
+// Chart rendering
+let progressChart;
+function updateChart() {
+    const ctx = document.getElementById("progressChart").getContext("2d");
+    if (progressChart) progressChart.destroy();
+
+    progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: weightLog.map((_, i) => `Week ${i+1}`),
+            datasets: [{
+                label: "Weight (kg)",
+                data: weightLog,
+                borderColor: "#0d1b2a",
+                backgroundColor: "rgba(13,27,42,0.2)",
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: "#1a2a4a",
+                pointBorderColor: "#0d1b2a",
+                pointRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: "#0d1b2a", font: { size: 14, weight: 'bold' } } }
+            },
+            scales: {
+                x: { ticks: { color: "#0d1b2a", font: { weight: 'bold' } }, grid: { color: "#ccc" } },
+                y: { ticks: { color: "#0d1b2a", font: { weight: 'bold' } }, grid: { color: "#ccc" } }
+            }
+        }
+    });
+}
+
+// Generate meal plan
+function generateOneDayMeal(calories) {
+    const meals = [
+        { meal: "🍳 Breakfast", item: "Oats with banana & milk", cal: Math.round(calories*0.25) },
+        { meal: "🥗 Lunch", item: "Grilled chicken / Paneer + Rice + Veggies", cal: Math.round(calories*0.35) },
+        { meal: "🍎 Snack", item: "Apple with peanut butter", cal: Math.round(calories*0.15) },
+        { meal: "🍲 Dinner", item: "Vegetable soup + Multigrain roti", cal: Math.round(calories*0.25) }
+    ];
+
+    const container = document.getElementById("dayMealPlan");
+    container.innerHTML = "";
+    meals.forEach(m => {
+        container.innerHTML += `
+            <div class="col-sm-6 col-md-3">
+                <div class="card shadow-sm h-100 border-0 rounded-4 meal-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">${m.meal}</h5>
+                        <p class="card-text text-muted">${m.item}</p>
+                        <p class="fw-bold text-primary">${m.cal} kcal</p>
+                    </div>
+                </div>
+            </div>`;
+    });
+}
+
+// Generate workout plan
+function generateWorkoutPlan() {
+    const workouts = [
+        ["20 min brisk walking / jogging", "15 pushups + 20 squats", "10 min yoga/stretching"],
+        ["30 min cycling", "3x15 lunges", "2 min plank"],
+        ["15 min skipping", "20 sit-ups", "Stretching + meditation"]
+    ];
+    const today = workouts[Math.floor(Math.random() * workouts.length)];
+    document.getElementById("workoutPlan").innerHTML = `
+        <div class="accordion shadow rounded" id="workoutAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button fw-bold" data-bs-toggle="collapse" data-bs-target="#collapseWorkout">
+                        Today’s Workout Plan
+                    </button>
+                </h2>
+                <div id="collapseWorkout" class="accordion-collapse collapse show">
+                    <div class="accordion-body text-start">
+                        <ul class="list-group list-group-flush">
+                            ${today.map(w => `<li class="list-group-item">✅ ${w}</li>`).join("")}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+}
+
+// Macro Pie Chart
+let macroChart;
+function generateMacroChart(calories) {
+    const protein = (calories*0.3/4).toFixed(0);
+    const carbs = (calories*0.4/4).toFixed(0);
+    const fat = (calories*0.3/9).toFixed(0);
+
+    const ctx = document.getElementById("macroChart");
+    if(macroChart) macroChart.destroy();
+
+    macroChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ["Protein (g)", "Carbs (g)", "Fat (g)"],
+            datasets: [{
+                data: [protein, carbs, fat],
+                backgroundColor: ["#dc3545", "#ffc107", "#28a745"],
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { weight: 'bold' } } },
+                tooltip: { callbacks: { label: function(ctx) { return ctx.label + ": " + ctx.raw + "g"; } } }
+            }
+        }
+    });
+}
+
+// PDF Download with Header, Footer, Styled Table, Charts, Meals & Workouts
+async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p','pt','a4');
+
+    let y = 60; // after header
+    const lineHeight = 18;
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    function checkPageSpace(additionalHeight){
+        if(y + additionalHeight > pageHeight - 60){
+            addFooter(doc);
+            doc.addPage();
+            addHeader(doc);
+            y = 60;
+        }
+    }
+
+    function addHeader(doc){
+        doc.setFontSize(12);
+        doc.setTextColor(40);
+        doc.setFont(undefined,'bold');
+        doc.text("Weight Loss Dashboard | FYP Project", pageWidth/2, 30, {align:'center'});
+        doc.setLineWidth(0.5);
+        doc.line(40, 35, pageWidth-40, 35);
+    }
+
+    function addFooter(doc){
+        const pageCount = doc.internal.getNumberOfPages();
+        for(let i=1;i<=pageCount;i++){
+            doc.setPage(i);
+            doc.setFontSize(10);
+            doc.setFont(undefined,'normal');
+            const date = new Date().toLocaleDateString();
+            doc.text(`Date: ${date}`, 40, pageHeight-20);
+            doc.text(`Page ${i} of ${pageCount}`, pageWidth-60, pageHeight-20);
+        }
+    }
+
+    addHeader(doc);
+
+    // Title
+    doc.setFontSize(20);
+    doc.text("Weight Loss Dashboard Report", 40, y);
+    y += 30;
+
+    // Calories & Macro
+    const resultDiv = document.getElementById("result");
+    const calorieText = resultDiv.innerText;
+    doc.setFontSize(14);
+    calorieText.split("\n").forEach(line=>{
+        checkPageSpace(lineHeight);
+        doc.text(line, 40, y);
+        y += lineHeight;
+    });
+
+    // Charts
+    const macroCanvas = document.getElementById("macroChart");
+    checkPageSpace(220);
+    doc.addImage(macroCanvas.toDataURL("image/png"), 'PNG', 150, y, 300, 200);
+    y += 220;
+
+    const weightCanvas = document.getElementById("progressChart");
+    checkPageSpace(220);
+    doc.addImage(weightCanvas.toDataURL("image/png"), 'PNG', 50, y, 500, 200);
+    y += 220;
+
+    // Styled Weight Table
+    const weightLogPDF = weightLog;
+    checkPageSpace(30 + weightLogPDF.length*20);
+    doc.setFontSize(16);
+    doc.text("Weekly Weight History:", 40, y);
+    y += 20;
+    const startX = 50, rowHeight = 20, colWidth = 100;
+
+    doc.setFont(undefined,'bold');
+    doc.setFillColor(13,27,42);
+    doc.setTextColor(255,255,255);
+    doc.rect(startX, y, colWidth, rowHeight, 'F');
+    doc.rect(startX+colWidth, y, colWidth, rowHeight, 'F');
+    doc.text("Week", startX+10, y+14);
+    doc.text("Weight (kg)", startX+colWidth+10, y+14);
+    y += rowHeight;
+
+    doc.setFont(undefined,'normal');
+    weightLogPDF.forEach((w,i)=>{
+        checkPageSpace(rowHeight);
+        doc.setFillColor(i%2===0?240:255, i%2===0?240:255, i%2===0?240:255);
+        doc.rect(startX, y, colWidth, rowHeight, 'F');
+        doc.rect(startX+colWidth, y, colWidth, rowHeight, 'F');
+        doc.setTextColor(0);
+        doc.text(`Week ${i+1}`, startX+10, y+14);
+        doc.text(`${w}`, startX+colWidth+10, y+14);
+        y += rowHeight;
+    });
+    y += 10;
+
+    // Meals
+    const meals = Array.from(document.querySelectorAll("#dayMealPlan .card-body"));
+    checkPageSpace(lineHeight+10);
+    doc.setFontSize(16);
+    doc.text("Today's Meal Plan:", 40, y);
+    y += 20;
+    doc.setFontSize(12);
+    meals.forEach(m=>{
+        checkPageSpace(lineHeight);
+        const mealTitle = m.querySelector(".card-title").innerText;
+        const mealItem = m.querySelector(".card-text").innerText;
+        const mealCal = m.querySelector(".fw-bold").innerText;
+        doc.text(`- ${mealTitle}: ${mealItem} (${mealCal})`, 50, y);
+        y += lineHeight;
+    });
+
+    // Workout
+    const workoutItems = Array.from(document.querySelectorAll("#workoutPlan .list-group-item"));
+    y += 10;
+    checkPageSpace(lineHeight+10);
+    doc.setFontSize(16);
+    doc.text("Today's Workout Plan:", 40, y);
+    y += 20;
+    doc.setFontSize(12);
+    workoutItems.forEach(w=>{
+        checkPageSpace(lineHeight);
+        doc.text(`- ${w.innerText}`, 50, y);
+        y += lineHeight;
+    });
+
+    addFooter(doc);
+    doc.save("WeightLoss_FullReport.pdf");
+}
+
+// Calculator
+document.getElementById("calcForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const age = parseInt(document.getElementById("age").value);
+    const height = parseFloat(document.getElementById("height").value);
+    const weight = parseFloat(document.getElementById("weight").value);
+    const activity = parseFloat(document.getElementById("activity").value);
+    const gender = document.getElementById("gender").value;
+
+    let bmr = gender==="female" ? 10*weight + 6.25*height - 5*age - 161 : 10*weight + 6.25*height - 5*age +5;
+    const calories = Math.round(bmr*activity);
+
+    document.getElementById("result").innerHTML = `
+        <h5 class="fw-bold">Daily Calories: ${calories} kcal</h5>
+        <p>
+            <span class="text-danger">Protein: ${(calories*0.3/4).toFixed(0)}g</span> | 
+            <span class="text-warning">Carbs: ${(calories*0.4/4).toFixed(0)}g</span> | 
+            <span class="text-success">Fat: ${(calories*0.3/9).toFixed(0)}g</span>
+        </p>
+    `;
+
+    generateOneDayMeal(calories);
+    generateWorkoutPlan();
+    generateMacroChart(calories);
+    updateChart();
+});
+
+// Initial chart
+updateChart();
+</script>
+{% endblock script %}
+
+{% endblock body %}

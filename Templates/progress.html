@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}Progress | FitLife{% endblock %}
+
+{% block body %}
+<style>
+/* ------------------ Cards ------------------ */
+.card { border:none; }
+.summary-card { 
+    padding:20px; border-radius:12px; background:linear-gradient(145deg,#fff,#f1f3f5); 
+    box-shadow:0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; 
+}
+.summary-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.15); }
+
+/* Glowing effect for summary cards */
+@keyframes cardGlow {
+  0% { box-shadow: 0 0 10px rgba(0,0,0,0.1); transform: scale(1); }
+  50% { box-shadow: 0 0 25px rgba(255,255,255,0.7); transform: scale(1.03); }
+  100% { box-shadow: 0 0 10px rgba(0,0,0,0.1); transform: scale(1); }
+}
+.glow-green { animation: cardGlow 1.2s ease-in-out; }
+.glow-blue { animation: cardGlow 1.2s ease-in-out; }
+.glow-orange { animation: cardGlow 1.2s ease-in-out; }
+
+/* Progress Bars */
+.progress-container { background-color:#e9ecef; border-radius:12px; padding:15px; margin-bottom:15px; }
+.progress-bar { 
+    height:28px; line-height:28px; color:#fff; font-weight:bold; border-radius:12px; 
+    transition: width 1.2s ease-in-out, box-shadow 0.5s;
+    background-size: 200% 100%; 
+    animation: gradientWave 3s linear infinite;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+.progress-bar-glow {
+    animation: glowEffect 2s ease-in-out infinite alternate, gradientWave 3s linear infinite;
+}
+@keyframes gradientWave {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+@keyframes glowEffect {
+    0% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+    100% { box-shadow: 0 0 20px rgba(255,255,255,0.7); }
+}
+
+/* Table */
+.table thead th { border-bottom:2px solid #dee2e6; color:#212529; }
+.table tbody tr:hover { background:#f0f8ff; transition: background 0.3s; }
+.table tbody tr.highlight { background:#e0f7fa; font-weight:500; }
+.no-data { 
+    text-align:center; padding:50px 20px; color:#6c757d; font-size:1.2rem; opacity:0; 
+    transition: opacity 0.8s ease-in-out;
+}
+.no-data.show { opacity:1; }
+
+/* Headings */
+h1,h2,h4,h5 { color:#212529; }
+
+/* Dropdown */
+.toggle-dropdown { text-align:center; margin-bottom:20px; }
+
+/* ------------------ Responsive Layout ------------------ */
+@media (min-width: 768px){
+  .summary-row { display:flex; justify-content:center; gap:20px; }
+  .summary-card { flex:1; max-width:220px; }
+}
+@media (max-width: 767px){
+  .summary-row { display:flex; flex-direction:column; align-items:center; gap:15px; }
+  .summary-card { width:80%; }
+}
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">FitLife</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">☰</button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Workouts</a>
+          <ul class="dropdown-menu shadow-lg rounded-3">
+            <li><a class="dropdown-item" href="{% url 'yoga' %}">Yoga</a></li>
+            <li><a class="dropdown-item" href="{% url 'weightloss' %}">Weight Loss</a></li>
+            <li><a class="dropdown-item" href="{% url 'dietplans' %}">Diet Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'strenghtraining' %}">Strength Training</a></li>
+            <li><a class="dropdown-item" href="{% url 'hiit' %}">HIIT</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainers_hub' %}">Trainers</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'membership' %}">Membership</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'progress_page' %}">Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'community' %}">Community</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        <li class="nav-item ms-2"><a class="btn btn-logout" href="{% url 'logout' %}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section id="progress" class="py-5">
+<div class="container">
+  <div class="text-center mb-5">
+    <h1 class="fw-bold">📈 Progress</h1>
+    <p class="text-muted">Track your exercises, duration, and calories burned</p>
+  </div>
+
+  <div class="toggle-dropdown mb-4">
+      <select class="form-select w-auto mx-auto" id="periodSelect">
+          <option value="today" selected>Today</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+      </select>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-row mb-4">
+    <div class="summary-card" id="card-total-workouts"><h5>Total Workouts</h5><h2 id="total-workouts">0</h2></div>
+    <div class="summary-card" id="card-total-duration"><h5>Total Duration (min)</h5><h2 id="total-duration">0</h2></div>
+    <div class="summary-card" id="card-total-calories"><h5>Total Calories</h5><h2 id="total-calories">0</h2></div>
+  </div>
+
+  <!-- Progress Bars -->
+  <div id="progress-bars" class="card shadow-sm rounded p-3 mb-5 bg-white">
+      <h4 class="mb-3">Progress by Exercise Type</h4>
+      <div class="progress-container mb-3">
+        <h6>Yoga</h6>
+        <div class="progress"><div id="yoga-progress" class="progress-bar progress-bar-glow" style="width:0%; background: linear-gradient(270deg,#16a34a,#34d399,#16a34a);">0%</div></div>
+      </div>
+      <div class="progress-container mb-3">
+        <h6>HIIT</h6>
+        <div class="progress"><div id="hiit-progress" class="progress-bar progress-bar-glow" style="width:0%; background: linear-gradient(270deg,#f97316,#fb923c,#f97316);">0%</div></div>
+      </div>
+      <div class="progress-container mb-3">
+        <h6>Strength Training</h6>
+        <div class="progress"><div id="strength-training-progress" class="progress-bar progress-bar-glow" style="width:0%; background: linear-gradient(270deg,#1d4ed8,#3b82f6,#1d4ed8);">0%</div></div>
+      </div>
+  </div>
+
+  <!-- Exercise Table -->
+  <div class="card shadow-sm rounded p-3 mb-5 bg-white">
+      <h4 class="mb-3">Exercise History</h4>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead><tr><th>Date</th><th>Exercise</th><th>Duration (min)</th><th>Calories Burned</th></tr></thead>
+          <tbody id="exercise-table">
+            <tr class="no-data"><td colspan="4">No exercises found for this period.</td></tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+
+  <!-- Line Chart -->
+  <div class="card shadow-sm rounded p-3 bg-white mb-5">
+      <h4 class="mb-3">Calories Burned (Trend)</h4>
+      <canvas id="progressChart" style="width:100%; height:350px;"></canvas>
+  </div>
+</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let chart;
+const exerciseTypes = ['Yoga','HIIT','Strength Training'];
+
+function glowCard(cardId, colorClass){
+    const card = document.getElementById(cardId);
+    if(!card) return;
+    card.classList.remove('glow-green','glow-blue','glow-orange');
+    void card.offsetWidth; 
+    card.classList.add(colorClass);
+}
+
+function animateCounterWithGlow(id, value, cardId, colorClass) {
+    const el = document.getElementById(id);
+    if(!el) return;
+    const duration = 1000;
+    const startTime = performance.now();
+    function step(now){
+        const progress = Math.min((now-startTime)/duration,1);
+        const eased = progress*(2-progress);
+        el.innerText = Math.round(eased*value);
+        if(progress<1) requestAnimationFrame(step);
+        else glowCard(cardId, colorClass);
+    }
+    requestAnimationFrame(step);
+}
+
+function animateProgress(id, value, total){
+    const bar = document.getElementById(id);
+    if(!bar) return;
+    const percent = total ? Math.round((value/total)*100) : 0;
+    const duration = 1200;
+    const startTime = performance.now();
+    function step(now){
+        const progress = Math.min((now-startTime)/duration,1);
+        const eased = progress*(2-progress);
+        const width = Math.round(eased*percent);
+        bar.style.width = width+'%';
+        bar.innerText = width+'%';
+        if(progress<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+function showNoData() {
+    const tbody = document.getElementById('exercise-table');
+    tbody.innerHTML = '<tr class="no-data"><td colspan="4">No exercises found for this period.</td></tr>';
+    setTimeout(()=> tbody.querySelector('.no-data').classList.add('show'),50);
+}
+
+function updateView(period){
+    fetch(`/api/exercises/?period=${period}`)
+        .then(res=>res.json())
+        .then(data=>renderDashboard(data))
+        .catch(err=>{
+            console.error('Error fetching exercises:', err);
+            showNoData();
+        });
+}
+
+function renderDashboard(exercises){
+    const totalWorkouts = exercises.length;
+    const totalDuration = exercises.reduce((a,b)=>a+b.duration,0);
+    const totalCalories = exercises.reduce((a,b)=>a+b.calories,0);
+
+    animateCounterWithGlow('total-workouts', totalWorkouts, 'card-total-workouts','glow-green');
+    animateCounterWithGlow('total-duration', totalDuration, 'card-total-duration','glow-blue');
+    animateCounterWithGlow('total-calories', totalCalories, 'card-total-calories','glow-orange');
+
+    const typeTotals = {};
+    exerciseTypes.forEach(t=>typeTotals[t]=0);
+
+    const tableBody = document.getElementById('exercise-table');
+    tableBody.innerHTML='';
+
+    if(totalWorkouts===0){
+        showNoData();
+        exerciseTypes.forEach(type=>{
+            animateProgress(type.toLowerCase().replace(' ','-')+'-progress',0,1);
+        });
+        if(chart) chart.destroy();
+        return;
+    }
+
+    exercises.forEach((ex,i)=>{
+        const exName = ex.name.trim().toLowerCase();
+        let key = null;
+        if(exName.includes('yoga')) key='Yoga';
+        else if(exName.includes('hiit')) key='HIIT';
+        else if(exName.includes('strength')) key='Strength Training';
+        if(key) typeTotals[key] += ex.calories;
+
+        const row = document.createElement('tr');
+        if(i===exercises.length-1) row.classList.add('highlight');
+        row.innerHTML = `<td>${ex.date}</td><td>${ex.name}</td><td>${ex.duration}</td><td>${ex.calories}</td>`;
+        tableBody.appendChild(row);
+    });
+
+    exerciseTypes.forEach(type=>{
+        animateProgress(type.toLowerCase().replace(' ','-')+'-progress', typeTotals[type], totalCalories);
+    });
+
+    // Chart
+    const grouped = {};
+    exercises.forEach(e=>{
+        if(!grouped[e.date]) grouped[e.date]={};
+        exerciseTypes.forEach(t=>grouped[e.date][t]=0);
+        const exName = e.name.trim().toLowerCase();
+        let key = null;
+        if(exName.includes('yoga')) key='Yoga';
+        else if(exName.includes('hiit')) key='HIIT';
+        else if(exName.includes('strength')) key='Strength Training';
+        if(key) grouped[e.date][key] += e.calories;
+    });
+
+    const labels = Object.keys(grouped).sort();
+    const datasets = exerciseTypes.map(t=>({
+        label: t,
+        data: labels.map(d=>grouped[d][t]),
+        borderColor: t==='Yoga'?'#16a34a':t==='HIIT'?'#f97316':'#1d4ed8',
+        backgroundColor:'rgba(0,0,0,0.05)',
+        tension:0.3,
+        fill:true,
+        pointRadius:5,
+        pointHoverRadius:10
+    }));
+
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    if(chart) chart.destroy();
+    chart = new Chart(ctx,{
+        type:'line',
+        data:{labels,datasets},
+        options:{
+            responsive:true,
+            interaction:{mode:'index',intersect:false},
+            plugins:{tooltip:{mode:'nearest', intersect:true}},
+            scales:{y:{beginAtZero:true}}
+        }
+    });
+}
+
+// Initialize dashboard dynamically
+document.addEventListener('DOMContentLoaded',()=>{
+    updateView('today');
+    document.getElementById('periodSelect').addEventListener('change', function(){
+        updateView(this.value);
+    });
+});
+</script>
+{% endblock %}

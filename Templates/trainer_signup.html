@@ -1,0 +1,21 @@
+<h2>Trainer Registration</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <input type="text" name="username" class="form-control mb-2" placeholder="Username" required>
+
+  <input type="password" name="password" class="form-control mb-2" placeholder="Password" required>
+
+  {{ form.name.label_tag }} {{ form.name }}
+  {{ form.spec.label_tag }} {{ form.spec }}
+  {{ form.exp.label_tag }} {{ form.exp }}
+  {{ form.bio.label_tag }} {{ form.bio }}
+  {{ form.phone.label_tag }} {{ form.phone }}
+  {{ form.photo.label_tag }} {{ form.photo }}
+  {{ form.hourly_rate.label_tag }} {{ form.hourly_rate }}
+
+  <button type="submit" class="btn btn-primary mt-3">
+    Register as Trainer
+  </button>
+</form>

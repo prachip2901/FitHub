@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Users for session: {{ session.title }}</h2>
+<ul>
+  {% for booking in bookings %}
+    <li>{{ booking.user.username }} ({{ booking.booked_at }}) 
+        <a href="{% url 'add_user_progress' booking.user.id %}">Add Progress</a>
+    </li>
+  {% empty %}
+    <li>No users joined yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

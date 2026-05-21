@@ -1,0 +1,175 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Client Progress | FitLife Trainer</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --bg-neutral: #f5f7fa;
+      --card-radius: 16px;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.1);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-neutral);
+      color: var(--dark-navy);
+      padding-top: 70px;
+    }
+
+    /* Navbar */
+    .navbar-modern {
+      background: rgba(13, 27, 42, 0.9);
+      backdrop-filter: blur(12px);
+    }
+    .navbar-brand span {
+      background: linear-gradient(90deg, var(--light-blue), #00c6ff);
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      font-size: 1.6rem;
+    }
+    .btn-logout {
+      background: linear-gradient(90deg,var(--accent-orange),#e85a2a);
+      color: #fff !important;
+      border-radius: 25px;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .page-header h2 {
+      font-weight: 700;
+      color: var(--steel-blue);
+    }
+
+    /* Client Info */
+    .client-card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: var(--soft-shadow);
+      padding: 1.8rem;
+      margin-bottom: 2rem;
+      transition: transform .2s ease;
+    }
+    .client-card:hover {
+      transform: translateY(-4px);
+    }
+    .client-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--light-blue);
+      margin-bottom: 1rem;
+    }
+
+    /* Progress Cards */
+    .progress-card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: var(--soft-shadow);
+      padding: 1.2rem;
+      text-align: center;
+      transition: transform .2s ease;
+    }
+    .progress-card:hover {
+      transform: translateY(-3px);
+    }
+    .progress-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-orange);
+    }
+    .progress-label {
+      font-weight: 600;
+      color: var(--steel-blue);
+    }
+
+  
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'trainer_dashboard' %}">
+      <span>FitLife Trainer</span>
+    </a>
+    <div class="ms-auto">
+      <a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+  <div class="page-header">
+    <h2>{{ client.name }}'s Progress</h2>
+    <p class="text-muted">Track client performance and achievements</p>
+  </div>
+
+  <!-- Client Info Card -->
+  <div class="client-card text-center">
+    <img src="{% static 'img/default_avatar.png' %}" alt="Client" class="client-avatar">
+    <h4 class="mb-1">{{ client.name }}</h4>
+    <p class="text-muted mb-1"><strong>Email:</strong> {{ client.email }}</p>
+    <p class="text-muted"><strong>Plan:</strong> {{ client.plan }}</p>
+  </div>
+
+  <!-- Progress Stats -->
+  <div class="row g-4">
+    <div class="col-md-3">
+      <div class="progress-card">
+        <div class="progress-value">75%</div>
+        <div class="progress-label">Workout Completion</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="progress-card">
+        <div class="progress-value">8 kg</div>
+        <div class="progress-label">Weight Lost</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="progress-card">
+        <div class="progress-value">12</div>
+        <div class="progress-label">Sessions Completed</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="progress-card">
+        <div class="progress-value">4.8★</div>
+        <div class="progress-label">Trainer Rating</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="client-card mt-4">
+    <h5>Trainer Notes</h5>
+    <p>Client has shown consistent improvement in endurance and flexibility. Recommend adding light strength training next week.</p>
+    <button class="btn btn-primary mt-2">Update Notes</button>
+  </div>
+</div>
+
+
+</body>
+</html>

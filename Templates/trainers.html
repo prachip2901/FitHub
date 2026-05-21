@@ -1,0 +1,319 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Dashboard | FitLife</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --accent-orange-dark: #e85a2a;
+      --accent-orange-hover: #ff7f50;
+      --bg-neutral: #f5f7fa;
+      --card-radius: 16px;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.08);
+      --primary-color: #4DA8DA;
+  --accent-color: #ff6b35;
+  --bg-dark: #0d1b2a;
+  --bg-light: #f8f9fa;
+  --text-light: #f0f6ff;
+  --text-dark: #212529;
+  --card-bg: #ffffff;
+
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --accent-orange-dark: #e85a2a;
+      --accent-orange-hover: #ff7f50;
+      --bg-neutral: #f5f7fa;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.08);
+    }
+
+    /* Base Reset */
+    * { box-sizing: border-box; margin:0; padding:0; }    /* Base Reset */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+  font-family:'Inter', sans-serif;
+      background: var(--bg-neutral);
+      color: var(--dark-navy);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+      padding-top: 70px; /* Navbar space */
+    }
+
+    /* -------------------- Navbar -------------------- */
+    .navbar-modern {
+      background: rgba(13, 27, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: .8rem 0;
+      transition: all .3s ease;
+    }
+    .navbar-modern .navbar-brand .logo-text {
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, var(--light-blue), #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .navbar-modern .nav-link {
+      position: relative;
+      color: #f0f6ff !important;
+      font-weight: 500;
+      margin: 0 .6rem;
+      transition: color .3s ease;
+    }
+    
+    .navbar-modern .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0%; height: 2px;
+      background: var(--light-blue);
+      transition: width .3s ease;
+    }
+    .navbar-modern .nav-link:hover::after {
+      width: 100%;
+    }
+    .navbar-modern .nav-link:hover {
+      color: var(--light-blue) !important;
+    }
+    .toggler-icon { font-size: 1.4rem; color: #fff; }
+
+    /* Logout Button */
+    .btn-logout {
+      background: linear-gradient(90deg,var(--accent-orange),var(--accent-orange-dark));
+      color: #fff !important;
+      border-radius: 25px;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+      transition: transform .2s, background .3s;
+    }
+    .btn-logout:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg,var(--accent-orange-hover),#ff9966);
+    }
+    /* CTA Buttons */
+    .btn-primary {
+      background: var(--accent-orange);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 30px;
+      padding: .6rem 1.2rem;
+      transition: background .3s, transform .2s;
+    }
+    .btn-primary:hover {
+      background: var(--accent-orange-dark);
+      transform: translateY(-2px);
+    }
+    .btn-outline-primary {
+      color: var(--dark-navy);
+      border: 2px solid var(--dark-navy);
+      border-radius: 30px;
+      font-weight: 600;
+      transition: background .3s, color .3s;
+    }
+    .btn-outline-primary:hover {
+      background: var(--dark-navy);
+      color: #fff;
+    }
+
+    /* FadeInUp Animation */
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Cards */
+    .card {
+      border-radius: var(--card-radius);
+      box-shadow: var(--soft-shadow);
+      border: none;
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(90deg,var(--dark-navy),var(--steel-blue));
+      color: rgba(255,255,255,0.9);
+      padding: 24px 0;
+      margin-top: 48px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media(max-width:767px){
+      .hero { height: 60vh; }
+      .hero p { font-size: 1rem; }
+      .btn-primary, .btn-outline-primary { padding: .5rem 1rem; font-size: 0.95rem; }
+    }
+
+.hero { height:35vh; background:url("{% static 'img/dash_page.jpg' %}") center/cover; display:flex; align-items:center; justify-content:center; color:white; text-align:center; position:relative; }
+.hero::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,0.6); }
+.hero-content { position:relative; }
+.card { border-radius:15px; border:none; box-shadow:0 8px 20px rgba(0,0,0,0.08); transition:0.3s; }
+.card:hover { transform:translateY(-5px); cursor:pointer; }
+.stat-card { background:linear-gradient(135deg,#4DA8DA,#1b3a57); color:white; padding:20px; border-radius:15px; text-align:center; transition:0.3s; }
+.stat-card:hover { transform:translateY(-6px); }
+.section-title { font-weight:700; margin:20px 0; border-left:5px solid var(--accent); padding-left:10px; }
+.table thead { background: var(--secondary); color:white; }
+</style>
+</head>
+<body>
+
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      <span class="logo-text" style="color: #4DA8DA;">FitLife</span>
+
+
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="toggler-icon">☰</span>
+    </button>
+
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+
+        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Workouts</a>
+          <ul class="dropdown-menu shadow-lg rounded-3">
+            
+          <li><a class="dropdown-item" href="{% url 'yoga' %}">Yoga</a></li>
+            <li><a class="dropdown-item" href="{% url 'weightloss' %}">Weight Loss</a></li>
+            <li><a class="dropdown-item" href="{% url 'dietplans' %}">Diet Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'strenghtraining' %}">Strength Training</a></li>
+            <li><a class="dropdown-item" href="{% url 'cardio' %}">Cardio</a></li>
+            <li><a class="dropdown-item" href="{% url 'hiit' %}">HIIT</a></li>
+          </ul>
+        </li>
+<a class="nav-link" href="{% url 'trainers_hub' %}">Trainers</a>
+        <li class="nav-item"><a class="nav-link" href="{% url 'membership' %}">Membership</a></li>
+<li class="nav-item"><a class="nav-link" href="{% url 'progress_page' %}">Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'community' %}">Community</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        <li class="nav-item ms-2">
+          <a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-content">
+    <h2>Welcome, {{ request.user.username }}</h2>
+    <p>View your assigned workouts & sessions</p>
+  </div>
+</section>
+
+<div class="container py-4">
+
+<!-- STATS -->
+<div class="row mb-4">
+  <div class="col-md-4"><div class="stat-card"><i class="bi bi-people fs-3"></i><h6>Trainers</h6><h3>{{ total_trainers }}</h3></div></div>
+  <div class="col-md-4"><div class="stat-card"><i class="bi bi-fire fs-3"></i><h6>Workouts</h6><h3>{{ total_workouts }}</h3></div></div>
+  <div class="col-md-4"><div class="stat-card"><i class="bi bi-calendar fs-3"></i><h6>Sessions</h6><h3>{{ total_sessions }}</h3></div></div>
+</div>
+
+<div class="row">
+{% if trainers %}
+    {% for trainer in trainers %}
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card p-3 text-center">
+                <i class="bi bi-person-circle fs-1 text-primary"></i>
+                <h5 class="mt-2">{{ trainer.user.username }}</h5>
+                <p class="text-muted">{{ trainer.specialty|default:"Fitness Coach" }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <!-- Placeholder card when no trainers exist -->
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card p-3 text-center">
+            <i class="bi bi-person-circle fs-1 text-secondary"></i>
+            <h5 class="mt-2">Coming Soon!</h5>
+            <p class="text-muted">Trainers will be available shortly</p>
+        </div>
+    </div>
+{% endif %}
+</div>
+
+<!-- WORKOUTS -->
+<h4 class="section-title">Your Workouts</h4>
+<div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+{% for workout in workouts %}
+  <div class="col"><div class="card p-3">
+    <h5>{{ workout.name }}</h5>
+    <p>Duration: {{ workout.duration_minutes }} mins</p>
+    <p>Calories: {{ workout.calories_burned }}</p>
+  </div></div>
+{% empty %}
+  <div class="col"><div class="alert alert-info text-center">No workouts assigned yet</div></div>
+{% endfor %}
+</div>
+
+<!-- SESSIONS -->
+<h4 class="section-title">Your Sessions</h4>
+<div class="card p-3 mb-4">
+  <table class="table table-hover">
+    <thead><tr><th>Trainer</th><th>Date</th><th>Time</th><th>Workout</th></tr></thead>
+    <tbody>
+    {% for session in sessions %}
+      <tr>
+        <td>{{ session.trainer.user.username }}</td>
+        <td>{{ session.date }}</td>
+        <td>{{ session.time }}</td>
+        <td>{% if session.workout %}{{ session.workout.name }}{% else %}No workout{% endif %}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4" class="text-center">No sessions scheduled</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<script type="application/json" id="sessions-data">
+  {{ sessions_json|safe }}
+</script>
+
+<script>
+const sessions = JSON.parse(document.getElementById("sessions-data").textContent || '[]');
+let notified = [];
+
+Notification.requestPermission().then(p => console.log("Notification permission:", p));
+
+function checkReminders() {
+    let now = new Date();
+    sessions.forEach((s, i) => {
+        if(!s.date || !s.time) return;
+        let [y,m,d] = s.date.split("-"), [h,min] = s.time.split(":");
+        let sd = new Date(y,m-1,d,h,min);
+        let diff = (sd-now)/60000;
+        if(diff>-1 && diff<=10 && !notified.includes(i)){
+            new Notification("⏰ Upcoming: "+(s.workout?s.workout.name:"Session")+" with "+s.trainer.username);
+            notified.push(i);
+        }
+    });
+}
+setInterval(checkReminders,60000);
+</script>
+
+</body>
+</html>

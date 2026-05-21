@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Reviews</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card-summary {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card-summary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .card-summary i {
+            font-size: 2.5rem;
+        }
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        /* Fade-in animation for cards and table */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .navbar-modern .navbar-brand .logo-text {
+        background: #4DA8DA; /* naya gradient */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        }
+
+        /* Pagination styling */
+        .pagination {
+            justify-content: center;
+        }
+
+                :root {
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --accent-orange-dark: #e85a2a;
+      --accent-orange-hover: #ff7f50;
+      --bg-neutral: #f5f7fa;
+      --card-radius: 16px;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.08);
+    }
+
+    /* Base Reset */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-neutral);
+      color: var(--dark-navy);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+      padding-top: 70px; /* Navbar space */
+    }
+
+    /* -------------------- Navbar -------------------- */
+    .navbar-modern {
+      background: rgba(13, 27, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: .8rem 0;
+      transition: all .3s ease;
+    }
+    .navbar-modern .navbar-brand .logo-text {
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, var(--light-blue), #4DA8DA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .navbar-modern .nav-link {
+      position: relative;
+      color: #f0f6ff !important;
+      font-weight: 500;
+      margin: 0 .6rem;
+      transition: color .3s ease;
+    }
+    .navbar-modern .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0%; height: 2px;
+      background: var(--light-blue);
+      transition: width .3s ease;
+    }
+    .navbar-modern .nav-link:hover::after {
+      width: 100%;
+    }
+    .navbar-modern .nav-link:hover {
+      color: var(--light-blue) !important;
+    }
+    .toggler-icon { font-size: 1.4rem; color: #fff; }
+
+    /* Logout Button */
+    .btn-logout {
+      background: linear-gradient(90deg,var(--accent-orange),var(--accent-orange-dark));
+      color: #fff !important;
+      border-radius: 25px;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+      transition: transform .2s, background .3s;
+    }
+    .btn-logout:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg,var(--accent-orange-hover),#ff9966);
+    }
+    </style>
+</head>
+<body>
+    
+<!-- Navbar -->
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      <span class="logo-text">FitLife</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="toggler-icon">☰</span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_clients' %}">My Clients</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_sessions' %}">Sessions</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_earnings' %}">Earnings</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_reviews' %}">Reviews</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-bell"></i>
+            {% if new_notifications|default:0 > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ new_notifications }}
+            </span>
+            {% endif %}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'trainer_notifications' %}">Mark all as read</a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% for notification in latest_notifications %}
+            <li class="dropdown-item {% if not notification.read %}fw-bold bg-light{% endif %}">
+              <a href="{{ notification.link }}">{{ notification.text|truncatechars:50 }}</a>
+            </li>
+            {% empty %}
+            <li class="dropdown-item">No new notifications</li>
+            {% endfor %}
+          </ul>
+        </li>
+            <div class="d-flex align-items-center">
+      <span class="text-white me-3">Trainer: John Doe</span>
+      <img src="https://via.placeholder.com/40" class="rounded-circle me-3">
+        <li class="nav-item ms-2">
+          <a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-5">
+    <!-- Page Header -->
+    <div class="text-center mb-5 fade-in">
+        <h2 class="fw-bold">Trainer Reviews</h2>
+        <p class="text-muted">Overview of trainer performance and client feedback</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3 fade-in" style="animation-delay: 0.1s;">
+            <div class="card card-summary text-white bg-primary h-100 p-3 d-flex align-items-center justify-content-center">
+                <i class="fa-solid fa-star mb-2"></i>
+                <h6 class="card-title mb-1">Total Reviews</h6>
+                <h3 class="card-text">{{ total_reviews|default:"0" }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3 fade-in" style="animation-delay: 0.2s;">
+            <div class="card card-summary text-white bg-success h-100 p-3 d-flex align-items-center justify-content-center">
+                <i class="fa-solid fa-chart-line mb-2"></i>
+                <h6 class="card-title mb-1">Average Rating</h6>
+                <h3 class="card-text">{{ avg_rating|default:"0" }} / 5</h3>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3 fade-in" style="animation-delay: 0.3s;">
+            <div class="card card-summary text-white bg-info h-100 p-3 d-flex align-items-center justify-content-center">
+                <i class="fa-solid fa-thumbs-up mb-2"></i>
+                <h6 class="card-title mb-1">Positive Feedback</h6>
+                <h3 class="card-text">{{ positive_feedback|default:"0" }}%</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Table -->
+    <div class="card shadow-sm fade-in" style="animation-delay: 0.4s;">
+        <div class="card-header">
+            Reviews History
+        </div>
+        <div class="card-body table-responsive">
+            {% if reviews %}
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Rating</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in reviews %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ review.date|date:"M d, Y" }}</td>
+                        <td>{{ review.client.username }}</td>
+                        <td>
+                            {{ review.rating }} / 5
+                            <span class="text-warning">
+                                {% for i in "12345"|slice:":review.rating" %}
+                                    ★
+                                {% endfor %}
+                            </span>
+                        </td>
+                        <td>{{ review.comment|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination (Bootstrap 5) -->
+            {% if reviews.has_other_pages %}
+            <nav>
+                <ul class="pagination mt-3">
+                    {% if reviews.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ reviews.previous_page_number }}" aria-label="Previous">&laquo;</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                    {% endif %}
+
+                    {% for num in reviews.paginator.page_range %}
+                        {% if reviews.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > reviews.number|add:'-3' and num < reviews.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if reviews.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ reviews.next_page_number }}" aria-label="Next">&raquo;</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+                <p class="text-muted">No reviews yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

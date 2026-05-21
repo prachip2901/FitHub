@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FitLife | Strength Training{% endblock %}
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary-color:#4DA8DA;
+  --accent-color:#ff6b35;
+  --bg-light:#f8f9fa;
+  --card-bg:#fff;
+  --soft-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* Body & Navbar */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+  font-family:'Inter', sans-serif;
+      background: var(--bg-neutral);
+      color: var(--text-dark);
+      scroll-behavior: smooth;
+      padding-top: 70px;
+    }
+
+    /* -------------------- Navbar -------------------- */
+    .navbar-modern {
+      background: rgba(13,27,42,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: .8rem 0;
+      transition: all .3s ease;
+    }
+    .navbar-modern .navbar-brand .logo-text {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary-color), #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .navbar-modern .nav-link {
+      position: relative;
+      color: var(--text-light) !important;
+      font-weight: 500;
+      margin: 0 .6rem;
+      transition: color .3s ease;
+    }
+    .navbar-modern .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0%; height: 2px;
+      background: var(--primary-color);
+      transition: width .3s ease;
+    }
+    .navbar-modern .nav-link:hover::after { width: 100%; }
+    .navbar-modern .nav-link:hover { color: var(--primary-color) !important; }
+
+    .toggler-icon { font-size: 1.4rem; color: #fff; }
+
+    .btn-logout {
+      background: linear-gradient(90deg,var(--accent-color),var(--accent-color-dark));
+      color: #fff !important;
+      border-radius: 25px;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+      transition: transform .2s, background .3s;
+    }
+    .btn-logout:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg,var(--accent-color-hover),#ff9966);
+    }
+/* Hero */
+.hero { height:350px; background:url('https://www.grampiansweightspecialists.com.au/wp-content/uploads/2025/04/The-Best-Weight-Loss-Programs-Of-2025-How-To-Choose-The-Right-One-For-You.png') center/cover no-repeat; display:flex; align-items:center; justify-content:center; position:relative; color:white; border-radius:0 0 20px 20px; }
+.hero::before { content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(13,27,42,0.7), rgba(27,58,87,0.35)); }
+.hero h2{ z-index:1; font-size:2.5rem; text-shadow:2px 2px 10px black; font-weight:700; }
+
+.section-title{ text-align:center; font-size:2rem; margin:40px 0; color:var(--primary); }
+.hero-content{ position:relative; text-align:center; color:#fff; }
+.hero-content p{ font-size:1.1rem; opacity:.9; }
+
+/* Exercise Cards */
+.exercise-card { background: var(--card-bg); border-radius:15px; padding:15px; text-align:center; box-shadow: var(--soft-shadow); transition: all .3s; cursor:pointer; }
+.exercise-card:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(77,168,218,0.3); }
+.exercise-card img { width:100%; height:220px; border-radius:12px; object-fit:cover; }
+.exercise-card h5 { margin-top:10px; color:var(--primary-color); font-weight:600; }
+.exercise-card p { color:#555; font-size:0.95rem; }
+.ai-tip-btn { background: var(--accent-color); border:none; color:#fff; border-radius:8px; padding:6px 12px; margin-top:8px; font-size:0.85rem; transition:0.3s; }
+.ai-tip-btn:hover { background:#e65c2e; }
+
+/* Timer Section */
+.timer-section { text-align:center; margin:70px 0; }
+.timer-box { background:#fff; display:inline-block; padding:30px 50px; border-radius:20px; box-shadow:0 0 20px rgba(0,0,0,0.15); min-width:280px; }
+.timer-box h3 { color:var(--primary-color); font-size:2rem; margin-bottom:10px; }
+.timer-controls button { border:none; color:#fff; font-size:1.1rem; margin:10px; padding:10px 20px; border-radius:10px; transition:0.3s; }
+.start-btn{ background:#28a745; } .start-btn:hover{ background:#218838; }
+.pause-btn{ background:#dc3545; } .pause-btn:hover{ background:#c82333; }
+.reset-btn{ background:#FFD43B; color:#212529; } .reset-btn:hover{ background:#e6c300; }
+
+/* Modal iframe */
+.ratio iframe { border-radius:12px; }
+
+/* Footer */
+.footer { text-align:center; padding:20px; background: linear-gradient(90deg,#0d1b2a,#1a2a4a); color:#f0f6ff; margin-top:50px; }
+
+/* Back-to-top */
+#backToTop { display:none; position:fixed; bottom:30px; right:30px; background: var(--primary-color); color:#fff; border:none; padding:10px 15px; border-radius:50%; cursor:pointer; transition:0.3s; }
+#backToTop:hover{ background:#0077b6; }
+
+@media(max-width:768px){ .hero h2{font-size:2.2rem;} .exercise-card img{height:180px;} .timer-box{padding:20px 25px;} }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}"><span class="logo-text">FitLife</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="toggler-icon text-white">☰</span></button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Workouts</a>
+          <ul class="dropdown-menu shadow-lg rounded-3">
+            <li><a class="dropdown-item" href="{% url 'yoga' %}">Yoga</a></li>
+            <li><a class="dropdown-item" href="{% url 'weightloss' %}">Weight Loss</a></li>
+            <li><a class="dropdown-item" href="{% url 'dietplans' %}">Diet Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'strenghtraining' %}">Strength Training</a></li>
+            <li><a class="dropdown-item" href="{% url 'cardio' %}">Cardio</a></li>
+            <li><a class="dropdown-item" href="{% url 'hiit' %}">HIIT</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainers_hub' %}">Trainers</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'membership' %}">Membership</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'progress_page' %}">Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'community' %}">Community</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        <li class="nav-item ms-2"><a class="btn btn-logout" href="{% url 'logout' %}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <h2 id="greeting">Strength Training</h2>
+    <p>Build strength, boost endurance, and transform your body with expert-guided workouts.</p>
+  </div>
+</section>
+
+<!-- Exercises Grid -->
+<div class="container my-5">
+  <div class="row g-4">
+    {% for exercise in exercises %}
+    <div class="col-md-4">
+      <div class="exercise-card" data-bs-toggle="modal" data-bs-target="#exerciseModal"
+           data-title="{{ exercise.title }}" data-desc="{{ exercise.desc }}" data-video="{{ exercise.video }}">
+        <img src="{{ exercise.img }}" loading="lazy" alt="{{ exercise.title }}">
+        <h5>{{ exercise.title }}</h5>
+        <p>{{ exercise.desc }}</p>
+        <button class="ai-tip-btn" onclick="event.stopPropagation(); showTip('{{ exercise.title }}')">AI Tip</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Timer Section -->
+<section class="timer-section">
+  <div id="timerBox" class="timer-box">
+    <h3 id="timer">00:00</h3>
+    <p id="currentExercise" class="fw-bold text-primary"></p>
+    <p id="roundInfo" class="fw-bold text-success"></p>
+    <div class="progress mb-3">
+      <div id="exerciseProgress" class="progress-bar bg-info" style="width:0%"></div>
+    </div>
+    <div class="timer-controls">
+      <button class="start-btn" onclick="startPlan()">Start</button>
+      <button class="pause-btn" onclick="pauseTimer()">Pause</button>
+      <button class="reset-btn" onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
+</section>
+
+<!-- Exercise Modal -->
+<div class="modal fade" id="exerciseModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exerciseTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="exerciseDesc"></p>
+        <div class="ratio ratio-16x9 mt-3">
+          <iframe id="exerciseVideo" src="" title="Exercise Video" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Tip Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="aiToast" class="toast text-bg-dark border-0">
+    <div class="toast-body" id="toastMsg"></div>
+  </div>
+</div>
+
+<!-- Back to top -->
+<button id="backToTop">↑</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ================== DOM Elements ==================
+const timerDisplay = document.getElementById("timer");
+const currentExercise = document.getElementById("currentExercise");
+const roundInfo = document.getElementById("roundInfo");
+const exerciseProgress = document.getElementById("exerciseProgress");
+
+const exerciseTitle = document.getElementById("exerciseTitle");
+const exerciseDesc = document.getElementById("exerciseDesc");
+const exerciseVideo = document.getElementById("exerciseVideo");
+
+// ================== Modal Handling ==================
+const modal = document.getElementById('exerciseModal');
+modal.addEventListener('show.bs.modal', e=>{
+  const c = e.relatedTarget;
+  exerciseTitle.innerText = c.dataset.title;
+  exerciseDesc.innerText = c.dataset.desc;
+  exerciseVideo.src = c.dataset.video;
+});
+modal.addEventListener('hidden.bs.modal', ()=>exerciseVideo.src="");
+
+// ================== AI Tips ==================
+const aiTips = {
+  "Push-Ups":"Engage core & keep back straight",
+  "Squats":"Knees aligned with toes",
+  "Deadlifts":"Lift with legs, not back"
+};
+function showTip(ex){
+  document.getElementById("toastMsg").innerText =
+    ex + " Tip: " + (aiTips[ex] || "Maintain proper form");
+  new bootstrap.Toast(document.getElementById("aiToast")).show();
+}
+
+// ================== Timer ==================
+const plans = JSON.parse('{{ aiPlans|escapejs }}');
+let plan=[], step=0, round=1, timerInterval=null, sec=0;
+const totalRounds=3, restTime=15;
+
+function format(sec){
+  return String(Math.floor(sec/60)).padStart(2,'0') + ":" + String(sec%60).padStart(2,'0');
+}
+
+function startPlan(){
+  plan = plans["Full Body"];
+  step=0; round=1;
+  runExercise();
+}
+
+function runExercise(){
+  if(step>=plan.length){
+    if(round<totalRounds){ round++; step=0; rest(); return; }
+    alert("Workout Complete 💪");
+    resetTimer(); return;
+  }
+  let ex = plan[step]; sec=0;
+  currentExercise.innerText = ex.name + " | " + ex.tip;
+  roundInfo.innerText = `Round ${round}/${totalRounds}`;
+  clearInterval(timerInterval);
+
+  timerInterval = setInterval(()=>{
+    sec++;
+    timerDisplay.innerText = format(sec);
+    exerciseProgress.style.width = Math.min((sec/ex.duration)*100,100) + "%";
+    if(sec>=ex.duration){ clearInterval(timerInterval); step++; runExercise(); }
+  },1000);
+}
+
+function rest(){
+  sec=0; currentExercise.innerText="Rest";
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    sec++;
+    timerDisplay.innerText = format(restTime-sec);
+    exerciseProgress.style.width = Math.min((sec/restTime)*100,100) + "%";
+    if(sec>=restTime){ clearInterval(timerInterval); runExercise(); }
+  },1000);
+}
+
+function pauseTimer(){ clearInterval(timerInterval); }
+function resetTimer(){
+  clearInterval(timerInterval);
+  timerDisplay.innerText="00:00";
+  currentExercise.innerText="";
+  roundInfo.innerText="";
+  exerciseProgress.style.width="0%";
+}
+
+// ================== Auto Greeting ==================
+const hour = new Date().getHours();
+document.getElementById("greeting").innerText =
+  hour < 12 ? "Morning Strength Training" :
+  hour < 18 ? "Afternoon Strength Training" :
+              "Evening Strength Training";
+</script>
+
+{% endblock body %}

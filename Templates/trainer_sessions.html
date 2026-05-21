@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trainer Dashboard - Pro</title>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+        :root {
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --accent-orange-dark: #e85a2a;
+      --accent-orange-hover: #ff7f50;
+      --bg-neutral: #f5f7fa;
+      --card-radius: 16px;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.08);
+    }
+
+    /* Base Reset */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-neutral);
+      color: var(--dark-navy);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+      padding-top: 70px; /* Navbar space */
+    }
+
+    /* -------------------- Navbar -------------------- */
+    .navbar-modern {
+      background: rgba(13, 27, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: .8rem 0;
+      transition: all .3s ease;
+    }
+    .navbar-modern .navbar-brand .logo-text {
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, var(--light-blue), #4DA8DA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .navbar-modern .nav-link {
+      position: relative;
+      color: #f0f6ff !important;
+      font-weight: 500;
+      margin: 0 .6rem;
+      transition: color .3s ease;
+    }
+    .navbar-modern .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0%; height: 2px;
+      background: var(--light-blue);
+      transition: width .3s ease;
+    }
+    .navbar-modern .nav-link:hover::after {
+      width: 100%;
+    }
+    .navbar-modern .nav-link:hover {
+      color: var(--light-blue) !important;
+    }
+    .toggler-icon { font-size: 1.4rem; color: #fff; }
+
+    /* Logout Button */
+    .btn-logout {
+      background: linear-gradient(90deg,var(--accent-orange),var(--accent-orange-dark));
+      color: #fff !important;
+      border-radius: 25px;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+      transition: transform .2s, background .3s;
+    }
+    .btn-logout:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg,var(--accent-orange-hover),#ff9966);
+    }
+body { font-family: 'Segoe UI', sans-serif; background-color: #f5f5f5; }
+.card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); transition: 0.3s; }
+.progress-circle { width: 60px; height: 60px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#0d6efd; }
+.badge-custom { background: linear-gradient(90deg, var(--light-blue), #4DA8DA); color: #fff; }
+.countdown { font-weight:500; }
+.table-hover tbody tr:hover { background-color: #f0f8ff; transition:0.2s; }
+
+.navbar-modern .navbar-brand .logo-text {
+  background: #4DA8DA; /* naya gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      <span class="logo-text">FitLife</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="toggler-icon">☰</span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_clients' %}">My Clients</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_sessions' %}">Sessions</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_earnings' %}">Earnings</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_reviews' %}">Reviews</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-bell"></i>
+            {% if new_notifications|default:0 > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ new_notifications }}
+            </span>
+            {% endif %}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'trainer_notifications' %}">Mark all as read</a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% for notification in latest_notifications %}
+            <li class="dropdown-item {% if not notification.read %}fw-bold bg-light{% endif %}">
+              <a href="{{ notification.link }}">{{ notification.text|truncatechars:50 }}</a>
+            </li>
+            {% empty %}
+            <li class="dropdown-item">No new notifications</li>
+            {% endfor %}
+          </ul>
+        </li>
+            <div class="d-flex align-items-center">
+      <span class="text-white me-3">Trainer: John Doe</span>
+      <img src="https://via.placeholder.com/40" class="rounded-circle me-3">
+        <li class="nav-item ms-2">
+          <a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+<!-- Next Session Widget -->
+ 
+<div class="row mb-4">
+
+  <div class="col-12">
+    
+    <div class="card shadow-sm p-3 bg-primary text-white">
+      <h5><i class="bi bi-clock-history me-2"></i>Next Session</h5>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h6 id="nextClient">Client: -</h6>
+          <p id="nextDateTime" class="mb-1">Date & Time: -</p>
+          <span id="nextCountdown" class="countdown"></span>
+        </div>
+        <div>
+          <button class="btn btn-light btn-sm" id="viewNextBtn" disabled>
+            <i class="bi bi-person-lines-fill"></i> View Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overview Cards -->
+<div class="row mb-4">
+  <div class="col-md-3 mb-3">
+    <div class="card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-people-fill fs-1 text-primary"></i>
+        <h5 class="card-title mt-2">Total Clients</h5>
+        <h3>25</h3>
+        <span class="badge badge-custom">5 New</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-calendar-check-fill fs-1 text-success"></i>
+        <h5 class="card-title mt-2">Upcoming Sessions</h5>
+        <h3>8</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-chat-dots-fill fs-1 text-warning"></i>
+        <h5 class="card-title mt-2">Pending Feedback</h5>
+        <h3>5</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-award-fill fs-1 text-danger"></i>
+        <h5 class="card-title mt-2">Badges Earned</h5>
+        <h3>12</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Session Cards -->
+<h4 class="mb-3">Upcoming & Past Sessions</h4>
+<div class="row session-cards mb-4">
+  <div class="col-md-4 mb-3 session-card" data-date="2025-11-04" data-time="17:00">
+    <div class="card card-hover">
+      <div class="card-body text-center">
+        <h5>Aarav Mehta</h5>
+        <p>Duration: 45 mins</p>
+        <span class="badge px-3 py-2"></span>
+        <p class="countdown"></p>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#clientModal">View Profile</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3 session-card" data-date="2025-11-02" data-time="10:00">
+    <div class="card card-hover">
+      <div class="card-body text-center">
+        <h5>Riya Sharma</h5>
+        <p>Duration: 1 hr</p>
+        <span class="badge px-3 py-2"></span>
+        <p class="countdown"></p>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#clientModal">View Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sessions Table -->
+<div class="table-responsive shadow-sm rounded-3 bg-white p-3">
+  <table id="sessionsTable" class="table table-hover align-middle">
+    <thead class="table-primary text-center">
+      <tr>
+        <th>#</th>
+        <th>Client Name</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody class="text-center">
+      <tr data-date="2025-11-02">
+        <td>1</td>
+        <td>Riya Sharma</td>
+        <td>2025-11-02</td>
+        <td>10:00</td>
+        <td>1 hr</td>
+        <td><span class="badge"></span></td>
+        <td><button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#clientModal"><i class="bi bi-person-lines-fill"></i> View</button></td>
+      </tr>
+      <tr data-date="2025-11-04">
+        <td>2</td>
+        <td>Aarav Mehta</td>
+        <td>2025-11-04</td>
+        <td>17:00</td>
+        <td>45 mins</td>
+        <td><span class="badge"></span></td>
+        <td><button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#clientModal"><i class="bi bi-person-lines-fill"></i> View</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Client Modal -->
+<div class="modal fade" id="clientModal" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-scrollable">
+<div class="modal-content">
+<div class="modal-header bg-primary text-white">
+<h5 class="modal-title">Client Profile</h5>
+<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<ul class="nav nav-tabs" id="clientTab" role="tablist">
+<li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#workout" type="button">Workouts</button></li>
+<li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#nutrition" type="button">Nutrition</button></li>
+<li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#progress" type="button">Progress</button></li>
+<li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#feedback" type="button">Feedback</button></li>
+</ul>
+
+<div class="tab-content mt-3">
+<div class="tab-pane fade show active" id="workout">
+<ul><li>Monday: Cardio 30 min + Abs</li><li>Wednesday: Strength 45 min</li><li>Friday: Yoga & Stretching</li></ul>
+</div>
+<div class="tab-pane fade" id="nutrition">
+<ul><li>High protein breakfast</li><li>Salad for lunch</li><li>Low-carb dinner</li></ul>
+</div>
+<div class="tab-pane fade" id="progress">
+<canvas id="weightChart" height="150"></canvas>
+<canvas id="bmiChart" height="150" class="mt-4"></canvas>
+</div>
+<div class="tab-pane fade" id="feedback">
+<textarea class="form-control mb-2" rows="3" placeholder="Write feedback..."></textarea>
+<button class="btn btn-success btn-sm">Send Feedback</button>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+$(document).ready(function(){
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
+
+// Assign badges & sort table
+$('#sessionsTable tbody tr').each(function(){
+  const row = $(this);
+  const date = row.data('date');
+  const badge = row.find('.badge');
+  let status = date>todayStr?'upcoming':date<todayStr?'past':'pending';
+  row.data('status',status);
+  badge.removeClass();
+  if(status==='upcoming') badge.addClass('badge bg-info').text('Upcoming');
+  else if(status==='past') badge.addClass('badge bg-secondary').text('Past');
+  else badge.addClass('badge bg-warning text-dark').text('Pending');
+});
+
+// Sort table by date
+const rows = $('#sessionsTable tbody tr').get();
+rows.sort((a,b)=> $(a).data('date').localeCompare($(b).data('date')));
+$.each(rows,(i,row)=>$('#sessionsTable tbody').append(row));
+
+// DataTable
+$('#sessionsTable').DataTable({
+  responsive:true,pageLength:5,lengthMenu:[[5,10,25,-1],[5,10,25,'All']],
+  dom:'Bfrtip',
+  buttons:[
+    {extend:'excelHtml5',className:'btn btn-sm btn-outline-success',text:'<i class="bi bi-file-earmark-excel"></i> Excel'},
+    {extend:'pdfHtml5',className:'btn btn-sm btn-outline-danger',text:'<i class="bi bi-file-earmark-pdf"></i> PDF'},
+    {extend:'csvHtml5',className:'btn btn-sm btn-outline-primary',text:'<i class="bi bi-filetype-csv"></i> CSV'},
+    {extend:'print',className:'btn btn-sm btn-outline-dark',text:'<i class="bi bi-printer"></i> Print'}
+  ]
+});
+
+// Charts
+const weightCtx = document.getElementById('weightChart').getContext('2d');
+new Chart(weightCtx,{type:'line',data:{labels:['Week1','Week2','Week3','Week4','Week5'],datasets:[{label:'Weight(kg)',data:[70,69,68,67,66],borderColor:'#0d6efd',backgroundColor:'rgba(13,110,253,0.1)',tension:0.4}]}});
+const bmiCtx = document.getElementById('bmiChart').getContext('2d');
+new Chart(bmiCtx,{type:'line',data:{labels:['Week1','Week2','Week3','Week4','Week5'],datasets:[{label:'BMI',data:[24,23.5,23,22.8,22.5],borderColor:'#198754',backgroundColor:'rgba(25,135,84,0.1)',tension:0.4}]} });
+
+// Countdown & Next Session Widget
+function updateNextSession(){
+  const now = new Date();
+  let nextSession=null;
+  $('.session-card').each(function(){
+    const card=$(this);
+    const dateStr=card.data('date');
+    const timeStr=card.data('time');
+    const sessionTime=new Date(dateStr+'T'+timeStr+':00');
+    if(sessionTime>now){if(!nextSession||sessionTime<nextSession.time){nextSession={time:sessionTime,client:card.find('h5').text(),card:card};}}
+  });
+  if(nextSession){
+    $('#nextClient').text(`Client: ${nextSession.client}`);
+    const options={year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'};
+    $('#nextDateTime').text(`Date & Time: ${nextSession.time.toLocaleString(undefined,options)}`);
+    $('#viewNextBtn').prop('disabled',false).off('click').on('click',function(){nextSession.card.find('button[data-bs-toggle="modal"]').click();});
+    function countdown(){const diff=nextSession.time-new Date();if(diff>0){const hrs=Math.floor(diff/1000/60/60);const mins=Math.floor((diff/1000/60)%60);const secs=Math.floor((diff/1000)%60);$('#nextCountdown').text(`Starts in ${hrs}h ${mins}m ${secs}s`);}else{$('#nextCountdown').text('Ongoing');}}
+    countdown();clearInterval(window.nextCountdownInterval);window.nextCountdownInterval=setInterval(countdown,1000);
+  }else{$('#nextClient').text('Client: -');$('#nextDateTime').text('Date & Time: -');$('#nextCountdown').text('No upcoming sessions');$('#viewNextBtn').prop('disabled',true);}
+}
+updateNextSession();
+
+// Countdown for each session card
+setInterval(function(){
+  $('.session-card').each(function(){
+    const card=$(this);
+    const date=card.data('date');
+    const time=card.data('time');
+    const countdownElem=card.find('.countdown');
+    const target=new Date(date+'T'+time+':00');
+    const now=new Date();
+    const diff=target-now;
+    if(diff>0){const hrs=Math.floor(diff/1000/60/60);const mins=Math.floor((diff/1000/60)%60);const secs=Math.floor((diff/1000)%60);countdownElem.text(`Starts in ${hrs}h ${mins}m ${secs}s`);}
+    else{countdownElem.text('Ongoing or Completed');}
+  });
+},1000);
+
+});
+</script>
+</body>
+</html>
+

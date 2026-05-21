@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Cardio Workouts{% endblock title %}
+
+{% block body %}
+
+<style>
+  h2{font-weight:700}
+
+  /* Hero */
+  .hero{
+    height:350px;
+    background:url('https://connect.healthkart.com/wp-content/uploads/2017/04/banner-2021-04-08T233718.963.jpg') center/cover no-repeat;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    color:white;
+  }
+
+  .hero::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background: linear-gradient(180deg, rgba(13,27,42,0.7), rgba(27,58,87,0.35));
+  }
+
+  .hero-content{
+    position:relative;
+    text-align:center;
+    max-width:700px;
+    padding:0 15px;
+  }
+
+  .hero h2{
+    font-size:2.6rem;
+    text-shadow:2px 2px 10px rgba(0,0,0,.6);
+    margin-bottom:10px;
+  }
+
+  .hero p{
+    font-size:1.05rem;
+    opacity:.9;
+  }
+</style>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <h2>Cardio Workouts</h2>
+    <p>
+      Structured cardio routines designed to improve endurance, burn calories,
+      and support overall heart health.
+    </p>
+  </div>
+</section>
+
+<!-- Calories Burned Estimator -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">Calories Burned Estimator</h2>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow p-4 border-0 rounded-4">
+        <label class="fw-semibold">Body Weight (kg)</label>
+        <input type="number" id="weight" class="form-control mb-3" placeholder="Enter your weight">
+
+        <label class="fw-semibold">Workout Duration (minutes)</label>
+        <input type="number" id="time" class="form-control mb-3" placeholder="Enter workout time">
+
+        <button class="btn btn-primary w-100 fw-semibold" onclick="calculateCalories()">
+          Calculate Calories
+        </button>
+
+        <h5 class="mt-3 text-center fw-bold text-primary" id="result"></h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Weekly Planner -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">Weekly Cardio Planner</h2>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover text-center shadow-sm">
+      <thead class="table-dark">
+        <tr>
+          <th>Day</th>
+          <th>Planned Activity</th>
+        </tr>
+      </thead>
+      <tbody class="table-light">
+        <tr><td>Monday</td><td>Running – 30 minutes</td></tr>
+        <tr><td>Tuesday</td><td>Cycling – 45 minutes</td></tr>
+        <tr><td>Wednesday</td><td>HIIT – 20 minutes</td></tr>
+        <tr><td>Thursday</td><td>Jump Rope – 15 minutes</td></tr>
+        <tr><td>Friday</td><td>Dance / Zumba – 40 minutes</td></tr>
+        <tr><td>Saturday</td><td>Cardio of your choice</td></tr>
+        <tr><td>Sunday</td><td>Rest or light walking</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Heart Rate Zones -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">Heart Rate Zones</h2>
+
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card p-4 text-center shadow-sm border-0 rounded-4 h-100">
+        <h5 class="fw-bold text-success">Fat Burn Zone</h5>
+        <p class="text-muted mb-0">
+          50–70% of your maximum heart rate. Ideal for fat loss and endurance training.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-4 text-center shadow-sm border-0 rounded-4 h-100">
+        <h5 class="fw-bold text-primary">Cardio Zone</h5>
+        <p class="text-muted mb-0">
+          70–85% of maximum heart rate. Improves stamina and cardiovascular strength.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-4 text-center shadow-sm border-0 rounded-4 h-100">
+        <h5 class="fw-bold text-danger">Peak Zone</h5>
+        <p class="text-muted mb-0">
+          85–100% of maximum heart rate. High-intensity training for speed and power.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Music Motivation -->
+<div class="container text-center my-5">
+  <h2 class="mb-4">Cardio Motivation Playlist</h2>
+
+  <a href="https://open.spotify.com/playlist/37i9dQZF1DX70RN3TfWWJh"
+     target="_blank" class="btn btn-success m-2">
+    Spotify Playlist
+  </a>
+
+  <a href="https://www.youtube.com/results?search_query=cardio+workout+music"
+     target="_blank" class="btn btn-danger m-2">
+    YouTube Playlist
+  </a>
+</div>
+
+<script>
+  function calculateCalories() {
+    const weight = document.getElementById("weight").value;
+    const time = document.getElementById("time").value;
+
+    if(weight && time) {
+      let calories = (weight * 0.1) * time;
+      document.getElementById("result").innerText =
+        `Estimated Calories Burned: ${Math.round(calories)} kcal`;
+    } else {
+      document.getElementById("result").innerText =
+        "Please enter both weight and duration.";
+    }
+  }
+</script>
+
+{% endblock body %}

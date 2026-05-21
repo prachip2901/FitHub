@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Workout | FitLife</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    background: linear-gradient(135deg,#eef2f7,#f8fbff);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* CARD */
+.form-card {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+}
+
+/* TITLE */
+.title {
+    text-align: center;
+    font-weight: 700;
+    color: #1b3a57;
+    margin-bottom: 25px;
+}
+
+/* INPUT */
+.form-control {
+    border-radius: 10px;
+    padding-left: 40px;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: #4DA8DA;
+    box-shadow: 0 0 0 0.2rem rgba(77,168,218,0.2);
+}
+
+/* ICON INPUT */
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+.input-group i {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    color: #888;
+}
+
+/* BUTTON */
+.btn-primary {
+    background: linear-gradient(135deg,#4DA8DA,#1b3a57);
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* BACK */
+.back-btn {
+    text-decoration: none;
+    color: #4DA8DA;
+    font-weight: 500;
+}
+</style>
+</head>
+
+<body>
+
+<div class="form-card">
+
+    <h3 class="title">
+        <i class="bi bi-fire"></i> Add Workout
+    </h3>
+
+    <!-- 🔴 ERROR MESSAGE -->
+    {% if error %}
+    <div class="alert alert-danger text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- NAME -->
+        <div class="input-group">
+            <i class="bi bi-type"></i>
+            <input type="text" name="name" class="form-control" placeholder="Workout Name" required>
+        </div>
+
+        <!-- DURATION -->
+        <div class="input-group">
+            <i class="bi bi-clock"></i>
+            <input type="number" name="duration" class="form-control" placeholder="Duration (minutes)" required>
+        </div>
+
+        <!-- CALORIES -->
+        <div class="input-group">
+            <i class="bi bi-lightning"></i>
+            <input type="number" name="calories" class="form-control" placeholder="Calories Burned" required>
+        </div>
+
+        <!-- PLAN DROPDOWN -->
+        <div class="input-group">
+            <i class="bi bi-list-check"></i>
+            <select name="plan" class="form-control">
+                <option value="">Select Plan</option>
+                {% for p in plans %}
+                    <option value="{{ p.id }}">{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- SUBMIT -->
+        <button type="submit" class="btn btn-primary w-100 mt-3">
+            ➕ Add Workout
+        </button>
+
+        <!-- BACK -->
+        <div class="text-center mt-3">
+            <a href="{% url 'trainer_dashboard' %}" class="back-btn">
+                ⬅ Back to Dashboard
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

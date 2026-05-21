@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trainer Dashboard Ultra Pro</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- FullCalendar -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+
+<style>
+
+    
+        :root {
+      --dark-navy: #0d1b2a;
+      --steel-blue: #1b3a57;
+      --light-blue: #4DA8DA;
+      --accent-orange: #ff6b35;
+      --accent-orange-dark: #e85a2a;
+      --accent-orange-hover: #ff7f50;
+      --bg-neutral: #f5f7fa;
+      --card-radius: 16px;
+      --soft-shadow: 0 6px 18px rgba(13,27,42,0.08);
+    }
+
+    /* Base Reset */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-neutral);
+      color: var(--dark-navy);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+      padding-top: 70px; /* Navbar space */
+    }
+
+    /* -------------------- Navbar -------------------- */
+    .navbar-modern {
+      background: rgba(13, 27, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: .8rem 0;
+      transition: all .3s ease;
+    }
+    .navbar-modern .navbar-brand .logo-text {
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, var(--light-blue), #4DA8DA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .navbar-modern .nav-link {
+      position: relative;
+      color: #f0f6ff !important;
+      font-weight: 500;
+      margin: 0 .6rem;
+      transition: color .3s ease;
+    }
+    .navbar-modern .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0%; height: 2px;
+      background: var(--light-blue);
+      transition: width .3s ease;
+    }
+    .navbar-modern .nav-link:hover::after {
+      width: 100%;
+    }
+    .navbar-modern .nav-link:hover {
+      color: var(--light-blue) !important;
+    }
+    .toggler-icon { font-size: 1.4rem; color: #fff; }
+
+    /* Logout Button */
+    .btn-logout {
+      background: linear-gradient(90deg,var(--accent-orange),var(--accent-orange-dark));
+      color: #fff !important;
+      border-radius: 25px;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+      transition: transform .2s, background .3s;
+    }
+    .btn-logout:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg,var(--accent-orange-hover),#ff9966);
+    }
+body { font-family:'Segoe UI', sans-serif; background:#f5f5f5; }
+.card-hover:hover { transform: translateY(-6px); box-shadow: 0 15px 25px rgba(0,0,0,0.2); transition: 0.4s; }
+.gradient-card { background: linear-gradient(135deg,#0d6efd,#6610f2); color:#fff; }
+.progress-circle {
+  width: 70px; height: 70px; border-radius:50%; 
+  display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:14px; margin:auto; 
+  transition: all 0.5s ease;
+}
+.navbar-modern .navbar-brand .logo-text {
+  background: #4DA8DA; /* naya gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.badge-popup {
+  position:absolute; top:10px; right:10px; 
+  animation: pop 0.6s ease forwards;
+  display:none;
+}
+@keyframes pop { 
+  0% { transform:scale(0); opacity:0; } 
+  50%{ transform:scale(1.2); opacity:1;} 
+  100%{ transform:scale(1); opacity:1; } 
+}
+.tab-content { padding-top:1rem; }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-modern fixed-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      <span class="logo-text">FitLife</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="toggler-icon">☰</span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_clients' %}">My Clients</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_sessions' %}">Sessions</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_earnings' %}">Earnings</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'trainer_reviews' %}">Reviews</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-bell"></i>
+            {% if new_notifications|default:0 > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ new_notifications }}
+            </span>
+            {% endif %}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'trainer_notifications' %}">Mark all as read</a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% for notification in latest_notifications %}
+            <li class="dropdown-item {% if not notification.read %}fw-bold bg-light{% endif %}">
+              <a href="{{ notification.link }}">{{ notification.text|truncatechars:50 }}</a>
+            </li>
+            {% empty %}
+            <li class="dropdown-item">No new notifications</li>
+            {% endfor %}
+          </ul>
+        </li>
+            <div class="d-flex align-items-center">
+      <span class="text-white me-3">Trainer: John Doe</span>
+      <img src="https://via.placeholder.com/40" class="rounded-circle me-3">
+        <li class="nav-item ms-2">
+          <a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-4">
+
+<!-- Overview Cards -->
+<div class="row mb-4">
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-people-fill fs-1"></i>
+        <h5 class="card-title mt-2">Total Clients</h5>
+        <h3>25</h3>
+        <span class="badge badge-light">5 New</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-calendar-check-fill fs-1"></i>
+        <h5 class="card-title mt-2">Upcoming Sessions</h5>
+        <h3>8</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-chat-dots-fill fs-1"></i>
+        <h5 class="card-title mt-2">Pending Feedback</h5>
+        <h3>5</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-award-fill fs-1"></i>
+        <h5 class="card-title mt-2">Badges Earned</h5>
+        <h3>12</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Client Cards -->
+<h4 class="mb-3">Clients</h4>
+<div class="row">
+  <div class="col-md-4 mb-3 position-relative">
+    <div class="badge bg-success badge-popup" id="badge1">Milestone!</div>
+    <div class="card card-hover">
+      <div class="card-body text-center">
+        <img src="https://via.placeholder.com/80" class="rounded-circle mb-2">
+        <h5>Jane Smith</h5>
+        <p>Goal: Weight Loss</p>
+        <div class="progress-circle" data-value="100" data-badge="badge1">0%</div>
+        <button class="btn btn-sm btn-light mt-2" data-bs-toggle="modal" data-bs-target="#clientModal">View Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3 position-relative">
+    <div class="badge bg-warning badge-popup" id="badge2">Goal!</div>
+    <div class="card card-hover">
+      <div class="card-body text-center">
+        <img src="https://via.placeholder.com/80" class="rounded-circle mb-2">
+        <h5>Mike Johnson</h5>
+        <p>Goal: Muscle Gain</p>
+        <div class="progress-circle" data-value="80" data-badge="badge2">0%</div>
+        <button class="btn btn-sm btn-light mt-2" data-bs-toggle="modal" data-bs-target="#clientModal">View Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Trainer Tools -->
+<div class="mt-4">
+  <h5>Trainer Tools</h5>
+  <button class="btn btn-info btn-sm mb-2" id="suggestWorkout">Suggest Workout</button>
+  <div id="suggestion" class="mb-2"></div>
+  <textarea id="trainerNotes" class="form-control mb-2" rows="3" placeholder="Secret trainer notes..."></textarea>
+  <button class="btn btn-success btn-sm" id="saveNotes">Save Notes</button>
+</div>
+
+<!-- Session Scheduler -->
+<h4 class="mt-4">Session Scheduler</h4>
+<div id="calendar"></div>
+
+<!-- Client Modal -->
+<div class="modal fade" id="clientModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Client Profile</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs" id="clientTab">
+          <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#workout">Workouts</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#nutrition">Nutrition</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#progress">Progress</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#feedback">Feedback</button></li>
+        </ul>
+        <div class="tab-content mt-3">
+          <div class="tab-pane fade show active" id="workout">
+            <ul><li>Monday: Cardio + Abs</li><li>Wed: Strength</li><li>Fri: Yoga</li></ul>
+          </div>
+          <div class="tab-pane fade" id="nutrition">
+            <ul><li>High Protein Breakfast</li><li>Salad Lunch</li><li>Low-carb Dinner</li></ul>
+          </div>
+          <div class="tab-pane fade" id="progress">
+            <canvas id="weightChart" height="150"></canvas>
+            <canvas id="bmiChart" height="150" class="mt-4"></canvas>
+          </div>
+          <div class="tab-pane fade" id="feedback">
+            <textarea class="form-control mb-2" rows="3" placeholder="Write feedback..."></textarea>
+            <button class="btn btn-success btn-sm">Send Feedback</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Workout Suggestion
+  const workouts = ["Cardio 30 min","Strength 45 min","Yoga","HIIT 20 min","Cycling"];
+  document.getElementById("suggestWorkout").addEventListener("click", ()=>{
+    const rand = Math.floor(Math.random()*workouts.length);
+    document.getElementById("suggestion").innerHTML = `<span class="badge bg-warning">${workouts[rand]}</span>`;
+  });
+
+  // Trainer Notes Save
+  document.getElementById("saveNotes").addEventListener("click", ()=>{
+    const note = document.getElementById("trainerNotes").value;
+    localStorage.setItem("trainerNoteDemo", note);
+    alert("Trainer note saved!");
+  });
+
+  // FullCalendar
+  document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridWeek',
+      editable: true,
+      events: [
+        { title: 'Jane Smith - 10 AM', start: '2025-11-05T10:00:00' },
+        { title: 'Mike Johnson - 11 AM', start: '2025-11-05T11:00:00' }
+      ]
+    });
+    calendar.render();
+  });
+
+  // Charts
+  const weightCtx = document.getElementById('weightChart').getContext('2d');
+  new Chart(weightCtx, {
+    type: 'line',
+    data: { labels: ['Week1','Week2','Week3','Week4','Week5'],
+      datasets: [{ label: 'Weight (kg)', data: [70,69,68,67,66], borderColor:'#0d6efd', backgroundColor:'rgba(13,110,253,0.1)', tension:0.4, fill:true }] }
+  });
+
+  const bmiCtx = document.getElementById('bmiChart').getContext('2d');
+  new Chart(bmiCtx, {
+    type: 'line',
+    data: { labels: ['Week1','Week2','Week3','Week4','Week5'],
+      datasets: [{ label: 'BMI', data: [24,23.5,23,22.8,22.5], borderColor:'#198754', backgroundColor:'rgba(25,135,84,0.1)', tension:0.4, fill:true }] }
+  });
+
+  // Animate Progress Circles and Milestone Badges
+  document.querySelectorAll('.progress-circle').forEach(circle => {
+    const targetValue = parseInt(circle.dataset.value);
+    const badgeId = circle.dataset.badge;
+    let currentValue = 0;
+
+    const interval = setInterval(() => {
+      if(currentValue >= targetValue){
+        clearInterval(interval);
+        if(targetValue >= 100 && badgeId){
+          const badge = document.getElementById(badgeId);
+          if(badge){
+            badge.style.display = 'block';
+            setTimeout(()=>{ badge.style.display='none'; }, 4000);
+          }
+        }
+      } else {
+        currentValue++;
+        circle.textContent = currentValue + '%';
+        circle.style.background = `conic-gradient(#0d6efd 0% ${currentValue}%, #e9ecef ${currentValue}% 100%)`;
+      }
+    }, 15);
+  });
+</script>
+
+</body>
+</html>
+
+<div class="container mt-4">
+
+<!-- Overview Cards -->
+<div class="row mb-4">
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-people-fill fs-1"></i>
+        <h5 class="card-title mt-2">Total Clients</h5>
+        <h3>25</h3>
+        <span class="badge badge-light">5 New</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-calendar-check-fill fs-1"></i>
+        <h5 class="card-title mt-2">Upcoming Sessions</h5>
+        <h3>8</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-chat-dots-fill fs-1"></i>
+        <h5 class="card-title mt-2">Pending Feedback</h5>
+        <h3>5</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card gradient-card text-center card-hover">
+      <div class="card-body">
+        <i class="bi bi-award-fill fs-1"></i>
+        <h5 class="card-title mt-2">Badges Earned</h5>
+        <h3>12</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Client Cards -->
+<h4 class="mb-3">Clients</h4>
+<div class="row">
+  <div class="col-md-4 mb-3 position-relative">
+    <div class="badge bg-success badge-popup" id="badge1">Milestone!</div>
+    <div class="card card-hover">
+      <div class="card-body text-center">
+        <img src="https://via.placeholder.com/80" class="rounded-circle mb-2">
+        <h5>Jane Smith</h5>
+        <p>Goal: Weight Loss</p>
+        <div class="progress-circle" data-value="60">60%</div>
+        <button class="btn btn-sm btn-light mt-2" data-bs-toggle="modal" data-bs-target="#clientModal">View Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3 position-relative">
+    <div class="badge bg-warning badge-popup" id="badge2">Goal!</div>
+    <div class="card card-hover">
+      <div class="card-body text-center">
+        <img src="https://via.placeholder.com/80" class="rounded-circle mb-2">
+        <h5>Mike Johnson</h5>
+        <p>Goal: Muscle Gain</p>
+        <div class="progress-circle" data-value="40">40%</div>
+        <button class="btn btn-sm btn-light mt-2" data-bs-toggle="modal" data-bs-target="#clientModal">View Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Trainer Tools -->
+<div class="mt-4">
+  <h5>Trainer Tools</h5>
+  <button class="btn btn-info btn-sm mb-2" id="suggestWorkout">Suggest Workout</button>
+  <div id="suggestion" class="mb-2"></div>
+  <textarea id="trainerNotes" class="form-control mb-2" rows="3" placeholder="Secret trainer notes..."></textarea>
+  <button class="btn btn-success btn-sm" id="saveNotes">Save Notes</button>
+</div>
+
+<!-- Session Scheduler -->
+<h4 class="mt-4">Session Scheduler</h4>
+<div id="calendar"></div>
+
+<!-- Client Modal -->
+<div class="modal fade" id="clientModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Client Profile - Jane Smith</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs" id="clientTab">
+          <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#workout">Workouts</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#nutrition">Nutrition</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#progress">Progress</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#feedback">Feedback</button></li>
+        </ul>
+        <div class="tab-content mt-3">
+          <div class="tab-pane fade show active" id="workout">
+            <ul><li>Monday: Cardio + Abs</li><li>Wed: Strength</li><li>Fri: Yoga</li></ul>
+          </div>
+          <div class="tab-pane fade" id="nutrition">
+            <ul><li>High Protein Breakfast</li><li>Salad Lunch</li><li>Low-carb Dinner</li></ul>
+          </div>
+          <div class="tab-pane fade" id="progress">
+            <canvas id="weightChart" height="150"></canvas>
+            <canvas id="bmiChart" height="150" class="mt-4"></canvas>
+          </div>
+          <div class="tab-pane fade" id="feedback">
+            <textarea class="form-control mb-2" rows="3" placeholder="Write feedback..."></textarea>
+            <button class="btn btn-success btn-sm">Send Feedback</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Workout Suggestion
+  const workouts = ["Cardio 30 min","Strength 45 min","Yoga","HIIT 20 min","Cycling"];
+  document.getElementById("suggestWorkout").addEventListener("click", ()=>{
+    const rand = Math.floor(Math.random()*workouts.length);
+    document.getElementById("suggestion").innerHTML = `<span class="badge bg-warning">${workouts[rand]}</span>`;
+  });
+
+  // Trainer Notes Save
+  document.getElementById("saveNotes").addEventListener("click", ()=>{
+    const note = document.getElementById("trainerNotes").value;
+    localStorage.setItem("trainerNoteDemo", note);
+    alert("Trainer note saved!");
+  });
+
+  // FullCalendar
+  document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridWeek',
+      editable: true,
+      events: [
+        { title: 'Jane Smith - 10 AM', start: '2025-11-05T10:00:00' },
+        { title: 'Mike Johnson - 11 AM', start: '2025-11-05T11:00:00' }
+      ]
+    });
+    calendar.render();
+  });
+
+  // Charts
+  const weightCtx = document.getElementById('weightChart').getContext('2d');
+  new Chart(weightCtx, {
+    type: 'line',
+    data: { labels: ['Week1','Week2','Week3','Week4','Week5'],
+      datasets: [{ label: 'Weight (kg)', data: [70,69,68,67,66], borderColor:'#0d6efd', backgroundColor:'rgba(13,110,253,0.1)', tension:0.4, fill:true }] }
+  });
+
+  const bmiCtx = document.getElementById('bmiChart').getContext('2d');
+  new Chart(bmiCtx, {
+    type: 'line',
+    data: { labels: ['Week1','Week2','Week3','Week4','Week5'],
+      datasets: [{ label: 'BMI', data: [24,23.5,23,22.8,22.5], borderColor:'#198754', backgroundColor:'rgba(25,135,84,0.1)', tension:0.4, fill:true }] }
+  });
+
+  // Animate Progress Circles
+  document.querySelectorAll('.progress-circle').forEach(circle => {
+    const value = parseInt(circle.dataset.value);
+    circle.style.background = `conic-gradient(#0d6efd 0% ${value}%, #e9ecef ${value}% 100%)`;
+  });
+
+  // Animate Milestone Badges (pop up after 2s for demo)
+  setTimeout(()=>{
+    document.getElementById('badge1').style.display='block';
+    setTimeout(()=>{ document.getElementById('badge1').style.display='none'; }, 3000);
+    document.getElementById('badge2').style.display='block';
+    setTimeout(()=>{ document.getElementById('badge2').style.display='none'; }, 3000);
+  },2000);
+</script>
+
+</body>
+</html>

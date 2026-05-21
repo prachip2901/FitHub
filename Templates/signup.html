@@ -1,0 +1,343 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Signup | FitLife</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary: #4DA8DA;
+  --accent: #ff6b35;
+  --text-color: #333;
+  --bg-light: #fdfdfd;
+  --card-bg: #ffffff;
+  --trainer-bg: #e0f0ff;
+  --user-bg: #ffece0;
+}
+
+/* Body & Background */
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f7f9fc, #eaf1f8);
+  overflow: hidden;
+  color: var(--text-color);
+}
+body::before, body::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  filter: blur(120px);
+  opacity: 0.3;
+  border-radius: 50%;
+}
+body::before { background: #ffb07c; top: -80px; left: -80px; }
+body::after { background: #4DA8DA; bottom: -80px; right: -80px; }
+
+/* Card */
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  border-radius: 20px;
+  background: var(--card-bg);
+  border: none;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  animation: fadeIn 0.8s ease;
+  transition: background 0.5s ease;
+}
+
+/* Title */
+.title { text-align: center; font-weight: 600; margin-bottom: 25px; font-size: 1.7rem; color: var(--text-color); }
+
+/* Inputs */
+.form-control {
+  background: #f9f9f9;
+  border: 1px solid #d1d5db;
+  color: var(--text-color);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: 0.3s;
+}
+.form-control::placeholder { color: #999; }
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(77,168,218,0.2);
+}
+
+/* Eye toggle */
+.eye { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666; }
+
+/* Buttons */
+.btn-main { width: 100%; border-radius: 30px; padding: 12px; font-weight: 600; border: none; transition: 0.3s; }
+.btn-otp { background: linear-gradient(135deg,#ff935c,#ff6b35); color: #fff; }
+.btn-otp:hover { box-shadow: 0 8px 20px rgba(255,107,53,0.3); }
+.btn-verify { background: linear-gradient(135deg,#4DA8DA,#6ec1ff); color: #fff; }
+.btn-verify:hover { box-shadow: 0 8px 20px rgba(77,168,218,0.3); }
+
+/* Small text */
+.small-text { font-size: 13px; margin-top: 5px; }
+.otp-section { display: none; margin-top: 15px; }
+.countdown { font-size: 12px; color: #555; }
+
+/* Links */
+.links { text-align: center; margin-top: 18px; }
+.links a { color: var(--primary); text-decoration: none; font-weight: 500; }
+.links a:hover { text-decoration: underline; }
+
+/* FadeIn animation */
+@keyframes fadeIn { from {opacity: 0; transform: translateY(30px);} to {opacity: 1; transform: translateY(0);} }
+
+/* Role Toggle - Sliding Slider */
+.role-toggle {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  border-radius: 50px;
+  background: #f0f0f0;
+  border: 1px solid #d1d5db;
+  overflow: hidden;
+  height: 45px;
+}
+.role-toggle button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s, font-size 0.3s;
+  font-size: 16px;
+}
+.role-toggle .slider {
+  position: absolute;
+  top: 0; left: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 50px;
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+.role-toggle button.active { color: #fff; }
+
+/* Responsive */
+@media (max-width:480px){
+  .card{padding:2rem; max-width:90%;}
+  .role-toggle{height:40px;}
+  .role-toggle button{font-size:14px;}
+  .btn-main{padding:10px; font-size:15px;}
+}
+</style>
+</head>
+
+<body>
+<div class="card" id="signupCard">
+  <h3 class="title">Create Account 🚀</h3>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  
+  <form id="loginForm" method="POST">
+    {% csrf_token %}
+    
+    <!-- Role Toggle with Slider -->
+    <div class="role-toggle">
+      <div class="slider" id="roleSlider"></div>
+      <button type="button" class="active" id="roleUser">User</button>
+      <button type="button" id="roleTrainer">Trainer</button>
+    </div>
+    <input type="hidden" id="roleInput" value="user">
+
+
+
+    <input type="text" name="username" class="form-control mb-3" placeholder="Username" required>
+    <input type="email" name="email" class="form-control mb-3" placeholder="Email" required>
+
+    <div class="position-relative mb-3">
+      <input type="password" id="pass1" name="password1" class="form-control" placeholder="Password" required>
+      <span class="eye" onclick="toggle('pass1')">👁</span>
+      <div id="passwordStrength" class="small-text text-danger"></div>
+    </div>
+
+    <div class="position-relative mb-3">
+      <input type="password" id="pass2" name="password2" class="form-control" placeholder="Confirm Password" required>
+      <span class="eye" onclick="toggle('pass2')">👁</span>
+      <div id="passwordMatch" class="small-text"></div>
+    </div>
+
+
+    <!-- OTP Section -->
+    <div class="otp-section" id="otpSection">
+      <input type="text" id="otp" name="otp" class="form-control mb-2" placeholder="Enter OTP">
+      <div class="countdown" id="countdown"></div>
+      <button type="button" id="resendOtpBtn" class="btn btn-link text-info p-0 mt-1" disabled>Resend OTP</button>
+    </div>
+
+    <button type="button" id="sendOtpBtn" class="btn-main btn-otp mt-2">Send OTP</button>
+    <button type="button" id="verifyOtpBtn" class="btn-main btn-verify mt-2" style="display:none;">Verify & Signup</button>
+  </form>
+
+  <div class="links">
+    <span>Already have an account?</span><br>
+    <a href="{% url 'login' %}">Login</a>
+  </div>
+</div>
+
+<script>
+// ===================== PASSWORD TOGGLE =====================
+function toggle(id){
+  const x = document.getElementById(id);
+  x.type = x.type === "password" ? "text" : "password";
+}
+
+// ===================== PASSWORD VALIDATION =====================
+function isStrongPassword(p){
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(p);
+}
+
+const pass1 = document.getElementById("pass1");
+const pass2 = document.getElementById("pass2");
+const sendBtn = document.getElementById('sendOtpBtn');
+const verifyBtn = document.getElementById('verifyOtpBtn');
+const otpSection = document.getElementById('otpSection');
+const resendBtn = document.getElementById('resendOtpBtn');
+const countdownEl = document.getElementById("countdown");
+let timer;
+
+// Password strength
+pass1.addEventListener("input", ()=>{
+  document.getElementById("passwordStrength").innerText =
+    isStrongPassword(pass1.value) ? "Strong password ✓" :
+    "Min 8 chars + uppercase + number + special char";
+});
+pass2.addEventListener("input", ()=>{
+  document.getElementById("passwordMatch").innerText =
+    pass1.value === pass2.value ? "Passwords match ✓" : "Passwords do not match";
+});
+
+// ===================== ROLE TOGGLE SLIDER =====================
+const roleUserBtn = document.getElementById('roleUser');
+const roleTrainerBtn = document.getElementById('roleTrainer');
+const roleSlider = document.getElementById('roleSlider');
+const roleInput = document.getElementById('roleInput');
+
+roleUserBtn.addEventListener('click', ()=>{
+  roleInput.value = 'user';
+  roleUserBtn.classList.add('active');
+  roleTrainerBtn.classList.remove('active');
+  roleSlider.style.transform = 'translateX(0%)';
+});
+roleTrainerBtn.addEventListener('click', ()=>{
+  roleInput.value = 'trainer';
+  roleTrainerBtn.classList.add('active');
+  roleUserBtn.classList.remove('active');
+  roleSlider.style.transform = 'translateX(100%)';
+});
+
+// ===================== SEND OTP =====================
+function sendOtpRequest(){
+  const email = document.querySelector('input[name="email"]').value.trim();
+  if(!email){ alert("Enter your email first"); return; }
+
+  fetch("{% url 'send_otp' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: JSON.stringify({ email })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === 'ok'){
+      alert("OTP Sent 📩");
+      otpSection.style.display = "block";
+      sendBtn.style.display = "none";
+      verifyBtn.style.display = "block";
+      startCountdown();
+    } else { alert(data.error); }
+  })
+  .catch(err => alert("Error sending OTP"));
+}
+
+// Send OTP button
+sendBtn.onclick = ()=>{
+  if(!isStrongPassword(pass1.value)){ alert("Weak password"); return; }
+  if(pass1.value !== pass2.value){ alert("Passwords not match"); return; }
+  sendOtpRequest();
+};
+
+// Resend OTP
+resendBtn.onclick = ()=>{ sendOtpRequest(); };
+
+// ===================== COUNTDOWN =====================
+function startCountdown(){
+  let time = 120;
+  resendBtn.disabled = true;
+  clearInterval(timer);
+
+  timer = setInterval(()=>{
+    if(time >= 0){
+      countdownEl.innerText = `OTP expires in ${time}s`;
+      time--;
+    } else {
+      clearInterval(timer);
+      countdownEl.innerText = "OTP expired";
+      resendBtn.disabled = false;
+    }
+  },1000);
+}
+
+// ===================== VERIFY & SIGNUP =====================
+verifyBtn.onclick = ()=>{
+  const username = document.querySelector('input[name="username"]').value.trim();
+  const email = document.querySelector('input[name="email"]').value.trim();
+  const password1 = document.getElementById('pass1').value;
+  const password2 = document.getElementById('pass2').value;
+  const otp = document.getElementById('otp').value.trim();
+  const role = roleInput.value;
+
+  if(!username || !email || !password1 || !password2 || !otp){
+    alert("Fill all fields including OTP"); return;
+  }
+
+  fetch("{% url 'signup' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: JSON.stringify({ username, email, password1, password2, otp, role })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === 'ok'){
+      alert("Signup successful! Redirecting...");
+      if(role === 'trainer'){
+        window.location.href = "{% url 'trainer_dashboard' %}";
+      } else {
+        window.location.href = "{% url 'login' %}";
+      }
+    } else { alert(data.error); }
+  })
+  .catch(err => alert("Error during signup"));
+};
+</script>
+</body>
+</html>

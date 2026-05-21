@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Contact{% endblock title %}
+
+{% block head %}
+<style>
+ /* Contact cards */
+ #contact .card { border-radius: 12px; }
+
+ /* Success message animation */
+ .alert-success {
+     opacity: 0;
+     transform: translateY(-20px);
+     transition: opacity 0.5s ease, transform 0.5s ease;
+ }
+ .alert-success.show {
+     opacity: 1;
+     transform: translateY(0);
+ }
+
+ 
+</style>
+{% endblock head %}
+
+{% block body %}
+<section id="contact" class="my-5">
+  <div class="container">
+    <h1 class="text-center mb-4 fw-bold">📩 Contact Us</h1>
+    <p class="text-center text-muted mb-5">Have questions, feedback, or suggestions? We’d love to hear from you!</p>
+
+    <div class="row g-4">
+      <div class="col-md-5">
+        <div class="card shadow-sm p-4 h-100">
+          <h5>📍 Address</h5>
+          <p>FitLife Gym, Near ABC Road, Ahmedabad</p>
+
+          <h5>📞 Phone</h5>
+          <p><a href="tel:+916353523350" class="text-decoration-none">+91 63535 23350</a></p>
+
+          <h5>✉️ Email</h5>
+          <p><a href="mailto:prachipatel4706@gmail.com" class="text-decoration-none">prachipatel4706@gmail.com</a></p>
+
+          <h5>🌐 Follow Us</h5>
+          <a href="#" class="me-2"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384031.png" width="30" alt="insta"></a>
+          <a href="#" class="me-2"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384033.png" width="30" alt="twitter"></a>
+          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384030.png" width="30" alt="fb"></a>
+        </div>
+      </div>
+
+      <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+
+          <!-- Success Messages -->
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success show">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="POST" action="{% url 'contact' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="name" class="form-label">Your Name</label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Your Email</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="message" class="form-label">Your Message</label>
+              <textarea class="form-control" id="message" name="message" rows="4" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Send Message</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3679.826569585!2d72.57136231503992!3d23.022505984948955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84f7e9a5a6f7%3A0x74b01d1edb1eb2e!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1694012034459!5m2!1sen!2sin"
+            width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Optional: Fade out success message after 3 seconds -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const alerts = document.querySelectorAll('.alert-success');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.remove('show');
+        alert.style.display = 'none';
+      }, 3000); // 3 seconds
+    });
+  });
+</script>
+
+{% endblock body %}

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Membership{% endblock title %}
+
+{% block body %} 
+<!-- MEMBERSHIP -->
+<style>
+/* MEMBERSHIP STYLES */
+#membership .card {
+    overflow: hidden;
+    border-radius: 20px;
+    min-height: 360px;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.5s ease;
+    position: relative;
+    border: none;
+}
+
+/* Hover effect */
+#membership .card:hover {
+    transform: translateY(-10px) scale(1.04);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+/* Card headers */
+#membership .card .card-header {
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+    border: none;
+}
+
+/* Plan backgrounds */
+#membership .card.basic { 
+    background: linear-gradient(135deg,#223b6b,#1b3a57);
+    color: #f0f4f8;
+}
+
+#membership .card.pro { 
+    background: linear-gradient(135deg,#ffb457,#ff7f50);
+    color: #0d1b2a;
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+#membership .card.premium { 
+    background: linear-gradient(135deg,#0d1b2a,#16263b);
+    color: #f0f4f8;
+}
+
+/* Popular badge */
+#membership .badge-popular {
+    background: #ff4757;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.3em 0.6em;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+/* Plan pricing */
+#membership .card h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Plan features */
+#membership .card ul {
+    padding-left: 0;
+    margin: 1.2rem 0;
+}
+#membership .card ul li {
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Buttons */
+#membership .btn {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.3s ease;
+}
+
+#membership .btn-outline-primary {
+    color: #fff;
+    border-color: #fff;
+}
+#membership .btn-outline-primary:hover {
+    background: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+    box-shadow: 0 8px 20px rgba(13,110,253,0.35);
+}
+
+#membership .btn-primary {
+    background: linear-gradient(135deg,#ff7f50,#ff4757);
+    border: none;
+}
+#membership .btn-primary:hover {
+    background: linear-gradient(135deg,#ff6347,#e84118);
+    box-shadow: 0 8px 20px rgba(255,71,87,0.35);
+}
+
+/* Mobile adjustments */
+@media(max-width: 768px){
+    #membership .card h3 { font-size: 1.6rem; }
+    #membership .card ul li { font-size: 0.95rem; }
+    #membership .card { min-height: auto; }
+}
+</style>
+
+<section id="membership" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold">🏅 Choose Your Membership Plan</h1>
+            <p class="text-muted">Pick the plan that fits your fitness goals!</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+
+            <!-- BASIC PLAN -->
+            <div class="col-md-4">
+                <div class="card basic text-center p-4 h-100">
+                    <div class="card-header text-warning">Basic</div>
+                    <div class="card-body">
+                        <h3>$19 <small class="text-white-50">/month</small></h3>
+                        <ul class="list-unstyled text-start">
+                            <li>💪 Basic workouts access</li>
+                            <li>🧘 Community support</li>
+                            <li>📅 Limited trainer sessions</li>
+                        </ul>
+                        <a href="{% url 'create_transaction' 1 %}" class="btn btn-outline-primary w-100">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRO PLAN -->
+            <div class="col-md-4">
+                <div class="card pro text-center p-4 h-100">
+                    <div class="card-header">
+                        Pro <span class="badge-popular">Popular</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>$39 <small class="text-dark">/month</small></h3>
+                        <ul class="list-unstyled text-start">
+                            <li>🏋️ All workouts access</li>
+                            <li>📈 Progress tracking</li>
+                            <li>🥗 Nutrition guidance</li>
+                            <li>💬 Priority support</li>
+                        </ul>
+                        <a href="{% url 'create_transaction' 2 %}" class="btn btn-primary w-100">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREMIUM PLAN -->
+            <div class="col-md-4">
+                <div class="card premium text-center p-4 h-100">
+                    <div class="card-header text-white">Premium</div>
+                    <div class="card-body">
+                        <h3>$59 <small class="text-white-50">/month</small></h3>
+                        <ul class="list-unstyled text-start">
+                            <li>💪 All Pro features</li>
+                            <li>🤝 1-on-1 Trainer Sessions</li>
+                            <li>🥗 Custom Nutrition Plans</li>
+                            <li>🎥 Exclusive Webinars</li>
+                        </ul>
+                        <a href="{% url 'create_transaction' 3 %}" class="btn btn-outline-primary w-100">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock body %}

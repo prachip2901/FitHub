@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Dashboard | FitLife</title>
+
+<!-- Bootstrap & Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary: #4DA8DA;
+  --secondary: #1b3a57;
+  --accent: #ff6b35;
+  --bg: #f5f7fa;
+}
+body { font-family: 'Poppins', sans-serif; background: var(--bg); padding-top: 70px; }
+
+/* NAVBAR */
+.navbar { background: var(--secondary); }
+.navbar-brand { color: var(--primary) !important; font-weight: 700; }
+
+/* HERO */
+.hero { height: 35vh; background: url("{% static 'img/dash_page.jpg' %}") center/cover; display: flex; align-items: center; justify-content: center; color: white; text-align: center; position: relative; }
+.hero::before { content: ""; position: absolute; inset:0; background: rgba(0,0,0,0.6); }
+.hero-content { position: relative; }
+
+/* CARDS */
+.card { border-radius: 15px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.08); transition: transform 0.3s; }
+.card:hover { transform: translateY(-5px); cursor: pointer; }
+.stat-card { background: linear-gradient(135deg,#4DA8DA,#1b3a57); color:white; padding:20px; border-radius:15px; text-align:center; transition:0.3s; }
+.stat-card:hover { transform: translateY(-6px); }
+.section-title { font-weight:700; margin:20px 0; border-left:5px solid var(--accent); padding-left:10px; }
+.table thead { background: var(--secondary); color:white; }
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand">FitLife Client</a>
+    <div class="ms-auto">
+      <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h2>Welcome, {{ request.user.username }}</h2>
+    <p>View your assigned workouts & sessions</p>
+  </div>
+</section>
+
+<div class="container py-4">
+
+<!-- STATS -->
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <i class="bi bi-people fs-3"></i>
+      <h6>Trainers</h6>
+      <h3>{{ trainers.count|default:0 }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <i class="bi bi-fire fs-3"></i>
+      <h6>Workouts</h6>
+      <h3>{{ workouts.count|default:0 }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <i class="bi bi-calendar fs-3"></i>
+      <h6>Sessions</h6>
+      <h3>{{ sessions.count|default:0 }}</h3>
+    </div>
+  </div>
+</div>
+
+{% if client %}
+<!-- TRAINERS -->
+<h4 class="section-title">Trainers</h4>
+<div class="row">
+  {% for trainer in trainers %}
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card p-3 text-center">
+        <i class="bi bi-person-circle fs-1 text-primary"></i>
+        <h5 class="mt-2">{{ trainer.user.username }}</h5>
+        <p class="text-muted">{{ trainer.specialty|default:"Fitness Coach" }}</p>
+        {% if trainer in client.following.all %}
+          <a href="{% url 'unfollow_trainer' trainer.id %}" class="btn btn-danger btn-sm mt-2">
+            <i class="bi bi-dash-circle"></i> Unfollow
+          </a>
+        {% else %}
+          <a href="{% url 'follow_trainer' trainer.id %}" class="btn btn-success btn-sm mt-2">
+            <i class="bi bi-plus-circle"></i> Follow
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p>No trainers available yet.</p>
+  {% endfor %}
+</div>
+
+<!-- WORKOUTS -->
+<h4 class="section-title">Your Workouts</h4>
+<div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+  {% for workout in workouts %}
+    <div class="col">
+      <div class="card p-3">
+        <h5>{{ workout.name }}</h5>
+        <p>Duration: {{ workout.duration_minutes }} mins</p>
+        <p>Calories: {{ workout.calories_burned }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col">
+      <div class="alert alert-info text-center">No workouts assigned yet</div>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- SESSIONS -->
+<h4 class="section-title">Your Sessions</h4>
+<div class="card p-3 mb-4">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Trainer</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Workout</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for session in sessions %}
+      <tr>
+        <td>{{ session.trainer.user.username }}</td>
+        <td>{{ session.date }}</td>
+        <td>{{ session.time }}</td>
+        <td>{% if session.workout %}{{ session.workout.name }}{% else %}No workout{% endif %}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-center">No sessions scheduled</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-warning text-center">
+  You are not registered as a client yet. Please contact admin to create your client profile.
+</div>
+{% endif %}
+
+<!-- SESSIONS DATA FOR NOTIFICATIONS -->
+<script type="application/json" id="sessions-data">
+  {{ sessions_json|safe }}
+</script>
+
+<script>
+const sessions = JSON.parse(document.getElementById("sessions-data").textContent || '[]');
+let notified = [];
+
+Notification.requestPermission().then(permission => console.log("Notification permission:", permission));
+
+function checkReminders() {
+    let now = new Date();
+
+    sessions.forEach((s, index) => {
+        if (!s.date || !s.time) return;
+
+        let [year, month, day] = s.date.split("-");
+        let [hour, minute] = s.time.split(":");
+        let sessionDate = new Date(year, month - 1, day, hour, minute);
+
+        let diff = (sessionDate - now) / 60000; // in minutes
+
+        if (diff > -1 && diff <= 10 && !notified.includes(index)) {
+            new Notification("⏰ Upcoming: " + (s.workout ? s.workout.name : "Session") +
+                             " with " + s.trainer.user.username);
+            notified.push(index);
+        }
+    });
+}
+
+setInterval(checkReminders, 60000);
+</script>
+
+</body>
+</html>
