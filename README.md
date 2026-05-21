@@ -128,10 +128,6 @@ FitHub is a full-stack online fitness website developed using Python, Django, an
 git clone https://github.com/prachip2901/FitHub.git
 ```
 
-### Navigate to project directory
-```bash
-cd FitHub
-```
 
 ### Install dependencies
 ```bash
